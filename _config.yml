@@ -11,7 +11,7 @@ title                    : "Dr. Bulent Soykan"
 title_separator          : "-"
 name                     : &name "Bulent Soykan"
 description              : &description "Research Scientist"
-url                      : https://academicpages.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://bulentsoykan.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
 repository               : "bulentsoykan.github.io"
 teaser                   :  # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
@@ -96,7 +96,7 @@ author:
   flickr           :
   facebook         :
   foursquare       :
-  github           : "academicpages"
+  github           : "bulentsoykan"
   google_plus      :
   keybase          :
   instagram        :
