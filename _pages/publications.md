@@ -14,7 +14,8 @@ Peer Reviewed Book Chapters
 * Bulent Soykan, Serpil Erol: An Optimization-Based Decision Support Framework for Robust Airline Crew Pairing Process. Using Decision Support Systems for Transportation Planning Efficiency, Edited by Ebru V. Ocalir-Akunal, 08/2015: chapter 1; IGI Global., ISBN: 9781466686489.
 *	Bulent Soykan, Ghaith Rabadi: A Tabu Search Algorithm for the Multiple Runway Aircraft Scheduling Problem. Heuristics, Metaheuristics and Approximate Methods in Planning and Scheduling, International Series in Operations Research & Management Science edited by Ghaith Rabadi, 01/2016: chapter 9; Springer International., ISBN: 978-3-319-26022-8.	
 
-Peer Reviewed Conference Papers	●	Taner Altinok, Bekir Kazandir, Bulent Soykan, Filiz Ersoz: Cost-Efficiency Analysis in Training Simulators: Example of Mortar Training Simulator and a Model Proposal, METU, USMOS 2007: National Defense Applications in Modeling and Simulation Conference.
+Peer Reviewed Conference Papers	
+* Taner Altinok, Bekir Kazandir, Bulent Soykan, Filiz Ersoz: Cost-Efficiency Analysis in Training Simulators: Example of Mortar Training Simulator and a Model Proposal, METU, USMOS 2007: National Defense Applications in Modeling and Simulation Conference.
 *	Bulent Soykan, Ghaith Rabadi: A Hybrid Metaheuristic Algorithm for Multi-Objective Runway Scheduling Problem in Simulation-based Optimization. MODSIM World 2016, Virginia Beach/VA; 04/2016
 *	Bulent Soykan, Serpil Erol: Airline Operational Scheduling Process. The 3rd International Aviation Management Conference, Ankara, Turkey; 04/2016
 *	Bulent Soykan, Serpil Erol: Simülasyon Deneyleri Tasarımı: Bir Simülasyon Modeli Üzerinde Karşılaştırmalı Çalışmalar / Designing Simulation Experiments: Comparative Studies on a Simulation Model. USMOS 2015, ODTU, Ankara / Turkey; 11/2015
