@@ -30,3 +30,5 @@ Operations research & systems analysis, data analytics, machine learning, reinfo
 - 📫 How to reach me: soykanb@gmail.com
 - 😄 Pronouns: He/him
 - ⚡ Fun fact: I know it is not true but I truly feel like I'm still twenty years old.
+- You can download a PDF copy of my CV [here](/files/Bulent Soykan_Academic CV_September 2022_v2.pdf).
+
