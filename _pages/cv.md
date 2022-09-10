@@ -50,13 +50,14 @@ Operations Research & Systems Analyst, Ministry of National Defense, Turkey
   
 Skills & Qualifications
 ======
-        Languages: Turkish - Mother tongue
-                             English - Full professional proficiency (National Language Exam (YDS) 96.25/100        
-                                            TOEFL PBT - Listening 59, Grammar 60, Reading 61, Total 600
-                                            NATO STANAG 6001- Listening 4/4, Speaking 4/4, Reading 4/4, Writing 4/4)
-                             German - Basic knowledge                                   French - Basic knowledge
-        Computer Skills:
-	* Experienced user of statistical packages, spreadsheet, database, business graphics, word processing, network applications classes of computer software 
+* Languages: Turkish - Mother tongue
+  * English - Full professional proficiency (National Language Exam (YDS) 96.25/100        
+     - TOEFL PBT  Listening 59, Grammar 60, Reading 61, Total 600
+     - NATO STANAG 6001 Listening 4/4, Speaking 4/4, Reading 4/4, Writing 4/4
+  * German - Basic knowledge                                   
+  * French - Basic knowledge
+* Computer Skills:
+* Experienced user of statistical packages, spreadsheet, database, business graphics, word processing, network applications classes of computer software 
 * Algebraic modeling software: GAMS, AMPL, IBM ILOG OPL, Gurobi, Pyomo, JuMP
 * Statistical modeling, & analysis software: R, SPSS
 * Simulation modeling software: SIMAN, ARENA, NetLogo, Vensim, Anylogic
