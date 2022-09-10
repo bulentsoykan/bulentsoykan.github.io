@@ -7,7 +7,7 @@
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Bulent Soykan, Ph.D., PMP"
+title                    : "Bulent Soykan"
 title_separator          : "-"
 name                     : &name "Bulent Soykan"
 description              : &description "Research Scientist"
@@ -82,7 +82,7 @@ analytics:
 author:
   name             : "Bulent Soykan, Ph.D., PMP"
   avatar           : "profile.png"
-  bio              : "Senior Operations Research (OR) Analyst with 25 years of experience, possessing an extensive skill-set in statistical analysis, OR, applied mathematics, simulation and modeling, machine learning, programming, strategic planning, and the streamlining of business policies and processes, with PMP certification."
+  bio              : "Senior Operations Research (OR) Analyst"
   location         : "Location"
   employer         :
   pubmed           : # "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
