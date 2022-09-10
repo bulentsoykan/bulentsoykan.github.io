@@ -5,12 +5,27 @@ permalink: /publications/
 author_profile: true
 ---
 
-{% if author.googlescholar %}
-  You can also find my articles on <u><a href="{{author.googlescholar}}">my Google Scholar profile</a>.</u>
-{% endif %}
+Peer Reviewed Journals	
+*	Bulent Soykan, Ghaith Rabadi: A simulation-based optimization approach for multi-objective runway operations scheduling, Simulation: Transactions of the Society for Modeling and Simulation International, June 2022. doi:10.1177/00375497221099544
+*	Bulent Soykan, Serpil Erol: A Branch-and-Price Algorithm for the Robust Airline Crew Pairing Problem, The Journal of Defense Sciences, Volume 13, Issue 1, 37-74, May 2014.
+*	Bulent Soykan: C2 Agility? What? Why? How?, The Transformers Spring/Summer 2015.
 
-{% include base_path %}
+Peer Reviewed Book Chapters	
+* Bulent Soykan, Serpil Erol: An Optimization-Based Decision Support Framework for Robust Airline Crew Pairing Process. Using Decision Support Systems for Transportation Planning Efficiency, Edited by Ebru V. Ocalir-Akunal, 08/2015: chapter 1; IGI Global., ISBN: 9781466686489.
+*	Bulent Soykan, Ghaith Rabadi: A Tabu Search Algorithm for the Multiple Runway Aircraft Scheduling Problem. Heuristics, Metaheuristics and Approximate Methods in Planning and Scheduling, International Series in Operations Research & Management Science edited by Ghaith Rabadi, 01/2016: chapter 9; Springer International., ISBN: 978-3-319-26022-8.	
 
-{% for post in site.publications reversed %}
-  {% include archive-single.html %}
-{% endfor %}
+Peer Reviewed Conference Papers	●	Taner Altinok, Bekir Kazandir, Bulent Soykan, Filiz Ersoz: Cost-Efficiency Analysis in Training Simulators: Example of Mortar Training Simulator and a Model Proposal, METU, USMOS 2007: National Defense Applications in Modeling and Simulation Conference.
+*	Bulent Soykan, Ghaith Rabadi: A Hybrid Metaheuristic Algorithm for Multi-Objective Runway Scheduling Problem in Simulation-based Optimization. MODSIM World 2016, Virginia Beach/VA; 04/2016
+*	Bulent Soykan, Serpil Erol: Airline Operational Scheduling Process. The 3rd International Aviation Management Conference, Ankara, Turkey; 04/2016
+*	Bulent Soykan, Serpil Erol: Simülasyon Deneyleri Tasarımı: Bir Simülasyon Modeli Üzerinde Karşılaştırmalı Çalışmalar / Designing Simulation Experiments: Comparative Studies on a Simulation Model. USMOS 2015, ODTU, Ankara / Turkey; 11/2015
+*	Bulent Soykan, David S Alberts: Moving C2 Agility from a theory to a NATO Practice. 20th International Command and Control Research and Technology Symposium; 07/2015
+*	Mustafa Canan, Bulent Soykan: Shared situational awareness/understanding: A key attribute of mission command concept for NATO. 21st International Command and Control Research and Technology Symposium; 09/2016
+*	Bulent Soykan, Serpil Erol: Analysis of Flight Delay Propagation with Bayesian Networks, International Conference on Engineering Technologies ICENTE 2020; 11/2020
+*	Bulent Soykan, Fatih Kasimoglu: Comparative studies on designing simulation experiments, ICENTE 2020; 11/2020
+*	Fatih Kasimoglu, Bulent Soykan: Worst case risk analysis of a transshipment network, International Conference on Engineering Technologies ICENTE 2020; 11/2020
+*	Bulent Soykan, Serpil Erol: Robust Scheduling and Schedule Optimization Approaches That Consider Operational Uncertainty, YONAR2021, 04/2021
+*	Bulent Soykan, Serpil Erol: Airline Scheduling Process Modeling Approaches and Solution Techniques, YONAR2021, 04/2021
+
+Technical Reports	
+* Bulent Soykan, Ghaith Rabadi: Multi-Objective Simulation-based Optimization of Runway Operations Scheduling Using a Hybrid Metaheuristic Algorithm. Technical Report for Airport Cooperative Research Program, 2016
+*	Micheline Belanger, Bjorn Johansson, David Alberts, Bulent Soykan, et al.: C2 Agility Next Steps, NATO Science and Technology Organization System Analysis and Studies Panel, 2018. ISBN 978-92-837-2171-0
