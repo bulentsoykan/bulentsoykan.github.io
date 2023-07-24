@@ -11,11 +11,11 @@ redirect_from:
 ### Hi there 👋
 I'm a Postdoctoral Scholar and Senior Operations Research (OR) Analyst with 25+ years of experience, possessing an extensive skill-set in statistical analysis, OR, applied mathematics, simulation and modeling, machine learning, programming, strategic planning, and the streamlining of business policies and processes, with PMP certification and a track record of successful project completion and goal achievement.
 
-Bio
+✨ Bio ✨ 
 ======
 I have a strong background in optimization, machine learning and multi-agent systems, with insights and experience with reinforcement learning and deep learning, including programming skills (Julia, Python). I have a high degree of work commitment, analytical skills, and like solving novel problems.
 
-Research Interests
+✨ Research Interests ✨ 
 ======
 My overall goal is to advance research in computational algorithms to change the world for the better. In general, my research interests include, but not limited to:
 
