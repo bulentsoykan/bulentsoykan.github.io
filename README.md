@@ -1,1 +1,0 @@
-# bulentsoykan.github.io
