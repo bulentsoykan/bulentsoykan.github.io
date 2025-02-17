@@ -1,0 +1,9 @@
+---
+title: "Post With Code"
+author: "Bulent Soykan"
+date: "2025-02-16"
+categories: [news, code, analysis]
+image: "image.jpg"
+---
+
+This is a post with executable code.
