@@ -16,15 +16,57 @@
   {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "This"
+    "text": "Graph Neural Networks (GNNs) use message passing to aggregate information from neighboring nodes. This process can be understood as simple matrix multiplication using the adjacency matrix and node feature matrix.\n\n\n\nEach node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]\n\n\n\n\n\n\nThe adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2.\n\n\n\n\n\nMessage passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]\n\n\n\n\n\nRaw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]\n\n\n\n\n\nMessage passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion.\n\n\n\n\nimport numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#node-features-as-a-matrix",
+    "href": "posts/post-with-code/index.html#node-features-as-a-matrix",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Each node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#adjacency-matrix-as-a-propagation-rule",
+    "href": "posts/post-with-code/index.html#adjacency-matrix-as-a-propagation-rule",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "The adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#message-passing-as-matrix-multiplication",
+    "href": "posts/post-with-code/index.html#message-passing-as-matrix-multiplication",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Message passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#normalization-avoiding-scale-explosion",
+    "href": "posts/post-with-code/index.html#normalization-avoiding-scale-explosion",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Raw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#summary",
+    "href": "posts/post-with-code/index.html#summary",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Message passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#python-implementation",
+    "href": "posts/post-with-code/index.html#python-implementation",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "import numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
+    "text": "Message Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
   }
 ]
