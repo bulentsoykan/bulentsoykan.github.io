@@ -3,6 +3,7 @@ project:
 
 website:
   title: "Bulent Soykan"
+  favicon: icon.png
   navbar:
     right:
       - about.qmd

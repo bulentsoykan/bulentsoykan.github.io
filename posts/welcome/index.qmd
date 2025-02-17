@@ -5,8 +5,14 @@ date: "2025-02-13"
 categories: [news]
 ---
 
-This is the first post in a Quarto blog. Welcome!
+This is the first post in my blog. Welcome!
 
 ![](thumbnail.jpg)
 
-Since this post doesn't specify an explicit `image`, the first image in the post will be used in the listing page of posts.
+This is the first post on my blog—welcome!
+
+I’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.
+
+Here, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.
+
+If these topics interest you, stick around. I look forward to exploring them with you.

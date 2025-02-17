@@ -1,5 +1,5 @@
 ---
-title: "Bulent Soykan"
+title: "Bulent Soykan's Blog"
 listing:
   contents: posts
   sort: "date desc"
