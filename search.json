@@ -63,10 +63,66 @@
     "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
   },
   {
+    "objectID": "posts/python-exceptions/index.html",
+    "href": "posts/python-exceptions/index.html",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime.\n\n\n\nIf an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")\n\n\n\n\nA finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs\n\n\n\nWhen working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")\n\n\n\nExceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")\n\n\n\nThe following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")\n\n\n\n\nExceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#understanding-exceptions",
+    "href": "posts/python-exceptions/index.html#understanding-exceptions",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime."
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
+    "href": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "If an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
+    "href": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "A finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
+    "href": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "When working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#exceptions-as-objects",
+    "href": "posts/python-exceptions/index.html#exceptions-as-objects",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "Exceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
+    "href": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "The following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#conclusion",
+    "href": "posts/python-exceptions/index.html#conclusion",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "Exceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Message Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
+    "text": "Python Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
   }
 ]
