@@ -4,7 +4,105 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on using machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here."
+    "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nVisit my website for more details: bulentsoykan.com"
+  },
+  {
+    "objectID": "about.html#bulent-soykan",
+    "href": "about.html#bulent-soykan",
+    "title": "About",
+    "section": "",
+    "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nVisit my website for more details: bulentsoykan.com"
+  },
+  {
+    "objectID": "posts/python-classes/index.html",
+    "href": "posts/python-classes/index.html",
+    "title": "Python Classes, Properties, and Factory Patterns",
+    "section": "",
+    "text": "In Python, object-oriented programming (OOP) is a key approach for writing reusable and modular code. A class is like a blueprint that defines how objects, which are instances of the class, are created and behave. Python’s OOP is shaped by its dynamic typing and first-class functions, offering more flexibility compared to languages like Java or C++.\n\n\n\nPython attributes include member variables, methods, and properties. A property looks like a regular attribute from the outside but uses methods to control how it’s accessed or modified. This is great for encapsulation, letting you manage an object’s internal state safely.\nYou create properties with the @property decorator. By default, a property is read-only, but you can add a setter to make it writable.\nHere’s an example:\nclass MyClass:\n    def __init__(self):\n        self._value = 0  # Protected attribute\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, new_value):\n        if new_value &gt;= 0:\n            self._value = new_value\n        else:\n            raise ValueError(\"Value must be non-negative\")\n\n\n\n_value is a protected attribute (the underscore is a convention).\nThe value property lets you get _value with the getter (@property).\nThe setter (@value.setter) ensures only non-negative values are allowed.\nThis setup is perfect for read-only attributes or adding validation.\n\n\n\n\n\nFactory patterns help create objects in a flexible and organized way, especially when creation logic is complex. In Python, we’ll look at two types: the Simple Factory Pattern and the Factory Method Pattern.\n\n\nThe Simple Factory Pattern uses a single function or method to create objects based on input. It’s straightforward and works when object types are fixed.\nExample:\nclass Animal:\n    def speak(self):\n        pass\n\nclass Dog(Animal):\n    def speak(self):\n        return \"Woof!\"\n\nclass Cat(Animal):\n    def speak(self):\n        return \"Meow!\"\n\ndef animal_factory(animal_type):\n    if animal_type == \"dog\":\n        return Dog()\n    elif animal_type == \"cat\":\n        return Cat()\n    else:\n        raise ValueError(\"Unknown animal type\")\n\n\n\n\nanimal_factory takes an animal_type and returns a Dog or Cat.\nThe client only needs to call the factory, not handle creation details.\n\n\n\n\nThe Factory Method Pattern is more flexible. It defines an interface for creating objects but lets subclasses decide the specific type. This shines when object types need to vary at runtime.\nExample:\nclass Creator:\n    def factory_method(self):\n        pass\n\n    def some_operation(self):\n        product = self.factory_method()\n        return product.speak()\n\nclass DogCreator(Creator):\n    def factory_method(self):\n        return Dog()\n\nclass CatCreator(Creator):\n    def factory_method(self):\n        return Cat()\n\n\n\n\nCreator has an abstract factory_method that subclasses like DogCreator and CatCreator implement.\nsome_operation uses the factory method without knowing the exact object type.\nAdding new types is easy—just create a new subclass.\n\nPython’s OOP tools, like properties for controlling attribute access and factory patterns for flexible object creation, make it easy to write clean, scalable code. These features leverage Python’s dynamic nature, giving you powerful ways to design applications. Explore them further to master Python’s OOP!"
+  },
+  {
+    "objectID": "posts/python-classes/index.html#introduction-to-python-classes-and-objects",
+    "href": "posts/python-classes/index.html#introduction-to-python-classes-and-objects",
+    "title": "Python Classes, Properties, and Factory Patterns",
+    "section": "",
+    "text": "In Python, object-oriented programming (OOP) is a key approach for writing reusable and modular code. A class is like a blueprint that defines how objects, which are instances of the class, are created and behave. Python’s OOP is shaped by its dynamic typing and first-class functions, offering more flexibility compared to languages like Java or C++."
+  },
+  {
+    "objectID": "posts/python-classes/index.html#properties-in-python",
+    "href": "posts/python-classes/index.html#properties-in-python",
+    "title": "Python Classes, Properties, and Factory Patterns",
+    "section": "",
+    "text": "Python attributes include member variables, methods, and properties. A property looks like a regular attribute from the outside but uses methods to control how it’s accessed or modified. This is great for encapsulation, letting you manage an object’s internal state safely.\nYou create properties with the @property decorator. By default, a property is read-only, but you can add a setter to make it writable.\nHere’s an example:\nclass MyClass:\n    def __init__(self):\n        self._value = 0  # Protected attribute\n\n    @property\n    def value(self):\n        return self._value\n\n    @value.setter\n    def value(self, new_value):\n        if new_value &gt;= 0:\n            self._value = new_value\n        else:\n            raise ValueError(\"Value must be non-negative\")\n\n\n\n_value is a protected attribute (the underscore is a convention).\nThe value property lets you get _value with the getter (@property).\nThe setter (@value.setter) ensures only non-negative values are allowed.\nThis setup is perfect for read-only attributes or adding validation."
+  },
+  {
+    "objectID": "posts/python-classes/index.html#factory-patterns-in-python",
+    "href": "posts/python-classes/index.html#factory-patterns-in-python",
+    "title": "Python Classes, Properties, and Factory Patterns",
+    "section": "",
+    "text": "Factory patterns help create objects in a flexible and organized way, especially when creation logic is complex. In Python, we’ll look at two types: the Simple Factory Pattern and the Factory Method Pattern.\n\n\nThe Simple Factory Pattern uses a single function or method to create objects based on input. It’s straightforward and works when object types are fixed.\nExample:\nclass Animal:\n    def speak(self):\n        pass\n\nclass Dog(Animal):\n    def speak(self):\n        return \"Woof!\"\n\nclass Cat(Animal):\n    def speak(self):\n        return \"Meow!\"\n\ndef animal_factory(animal_type):\n    if animal_type == \"dog\":\n        return Dog()\n    elif animal_type == \"cat\":\n        return Cat()\n    else:\n        raise ValueError(\"Unknown animal type\")\n\n\n\n\nanimal_factory takes an animal_type and returns a Dog or Cat.\nThe client only needs to call the factory, not handle creation details.\n\n\n\n\nThe Factory Method Pattern is more flexible. It defines an interface for creating objects but lets subclasses decide the specific type. This shines when object types need to vary at runtime.\nExample:\nclass Creator:\n    def factory_method(self):\n        pass\n\n    def some_operation(self):\n        product = self.factory_method()\n        return product.speak()\n\nclass DogCreator(Creator):\n    def factory_method(self):\n        return Dog()\n\nclass CatCreator(Creator):\n    def factory_method(self):\n        return Cat()\n\n\n\n\nCreator has an abstract factory_method that subclasses like DogCreator and CatCreator implement.\nsome_operation uses the factory method without knowing the exact object type.\nAdding new types is easy—just create a new subclass.\n\nPython’s OOP tools, like properties for controlling attribute access and factory patterns for flexible object creation, make it easy to write clean, scalable code. These features leverage Python’s dynamic nature, giving you powerful ways to design applications. Explore them further to master Python’s OOP!"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html",
+    "href": "posts/python-exceptions/index.html",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime.\n\n\n\nIf an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")\n\n\n\n\nA finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs\n\n\n\nWhen working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")\n\n\n\nExceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")\n\n\n\nThe following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")\n\n\n\n\nExceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#understanding-exceptions",
+    "href": "posts/python-exceptions/index.html#understanding-exceptions",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime."
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
+    "href": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "If an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
+    "href": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "A finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
+    "href": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "When working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#exceptions-as-objects",
+    "href": "posts/python-exceptions/index.html#exceptions-as-objects",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "Exceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
+    "href": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "The following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#conclusion",
+    "href": "posts/python-exceptions/index.html#conclusion",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "Exceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
   },
   {
     "objectID": "posts/Message-passing/index.html",
@@ -56,17 +154,10 @@
     "text": "import numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Message Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
+    "text": "Python Classes, Properties, and Factory Patterns\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 1, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
   }
 ]

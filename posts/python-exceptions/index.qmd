@@ -1,0 +1,112 @@
+---
+title: "Python Exceptions and Errors"
+author: "Bulent Soykan"
+date: "2025-02-22"
+categories: [code]
+image: "exception.png"
+---
+
+# Python Exceptions and Errors
+
+## Understanding Exceptions
+
+An **exception** is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.
+
+Exceptions are not always errors; they can also serve as a **flow-control tool**, allowing you to deal with predictable variations at runtime.
+
+## Handling Exceptions with `try/except`
+
+If an exception is not handled, your program will **crash**. To prevent this, use `try/except` blocks:
+
+```python
+try:
+    result = 10 / 0  # This will cause a ZeroDivisionError
+except ZeroDivisionError:
+    print("Cannot divide by zero!")
+```
+
+### Best Practice: Minimal `try` Block
+
+A good habit is to keep the **`try` block as small as possible**. This ensures that your `except` block does not accidentally catch errors it should not handle.
+
+```python
+try:
+    value = int(user_input)  # Only this line is inside try
+except ValueError:
+    print("Invalid input! Please enter a number.")
+```
+
+## The `finally` Block: Ensuring Code Execution
+
+A `finally` block is useful for **cleanup code that must run no matter what**:
+
+```python
+try:
+    file = open("data.txt", "r")
+    data = file.read()
+finally:
+    file.close()  # Ensures file is closed even if an error occurs
+```
+
+## Avoiding `KeyError` in Dictionaries
+
+When working with dictionaries, use the `if key in dict` pattern to avoid `KeyError` instead of relying on `try/except`:
+
+```python
+data = {"name": "Alice"}
+
+if "age" in data:
+    print(data["age"])
+else:
+    print("Key not found")
+```
+
+## Exceptions as Objects
+
+Exceptions in Python are **instances of exception classes**. Common built-in exceptions include:
+
+- `KeyError`
+- `IndexError`
+- `TypeError`
+- `ValueError`
+
+These all inherit from the base `Exception` class:
+
+```python
+try:
+    my_list = [1, 2, 3]
+    print(my_list[5])  # IndexError
+except IndexError:
+    print("Index out of range!")
+```
+
+## The Most Diabolical Python Antipattern
+
+The following is one of the worst mistakes a Python developer can make:
+
+```python
+try:
+    do_something()
+except:
+    pass  # Silently ignores ALL exceptions
+```
+
+If you **omit the exception type**, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch **specific** exceptions:
+
+```python
+try:
+    do_something()
+except KeyError:
+    print("Key not found in dictionary!")
+except ValueError:
+    print("Invalid value encountered!")
+```
+
+## Conclusion
+
+- **Exceptions should be handled properly** to prevent crashes.
+- **Use `try/except` minimally** to avoid masking other errors.
+- **`finally` ensures execution** of cleanup code.
+- **Avoid catching all exceptions blindly**—always specify the exception type.
+
+By following these best practices, you can write **robust and maintainable** Python code.

@@ -1,0 +1,112 @@
+---
+title: "Python Classes, Properties, and Factory Patterns"
+author: "Bulent Soykan"
+date: "2025-03-01"
+categories: [code]
+image: "classes.png"
+---
+
+#  Python Classes, Properties, and Factory Patterns
+
+## Introduction to Python Classes and Objects
+
+In Python, **object-oriented programming (OOP)** is a key approach for writing reusable and modular code. A **class** is like a blueprint that defines how **objects**, which are instances of the class, are created and behave. Python’s OOP is shaped by its **dynamic typing** and **first-class functions**, offering more flexibility compared to languages like Java or C++.
+
+## Properties in Python
+
+Python attributes include member variables, methods, and **properties**. A **property** looks like a regular attribute from the outside but uses methods to control how it’s accessed or modified. This is great for **encapsulation**, letting you manage an object’s internal state safely.
+
+You create properties with the **`@property`** decorator. By default, a property is **read-only**, but you can add a setter to make it writable.
+
+Here’s an example:
+
+```python
+class MyClass:
+    def __init__(self):
+        self._value = 0  # Protected attribute
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        if new_value >= 0:
+            self._value = new_value
+        else:
+            raise ValueError("Value must be non-negative")
+```
+
+### Explanation:
+- `_value` is a protected attribute (the underscore is a convention).
+- The `value` property lets you get `_value` with the getter (`@property`).
+- The setter (`@value.setter`) ensures only non-negative values are allowed.
+- This setup is perfect for read-only attributes or adding validation.
+
+## Factory Patterns in Python
+
+Factory patterns help create objects in a flexible and organized way, especially when creation logic is complex. In Python, we’ll look at two types: the **Simple Factory Pattern** and the **Factory Method Pattern**.
+
+### Simple Factory Pattern
+
+The **Simple Factory Pattern** uses a single function or method to create objects based on input. It’s straightforward and works when object types are fixed.
+
+Example:
+
+```python
+class Animal:
+    def speak(self):
+        pass
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow!"
+
+def animal_factory(animal_type):
+    if animal_type == "dog":
+        return Dog()
+    elif animal_type == "cat":
+        return Cat()
+    else:
+        raise ValueError("Unknown animal type")
+```
+
+### How it Works:
+- `animal_factory` takes an `animal_type` and returns a `Dog` or `Cat`.
+- The client only needs to call the factory, not handle creation details.
+
+### Factory Method Pattern
+
+The **Factory Method Pattern** is more flexible. It defines an interface for creating objects but lets subclasses decide the specific type. This shines when object types need to vary at runtime.
+
+Example:
+
+```python
+class Creator:
+    def factory_method(self):
+        pass
+
+    def some_operation(self):
+        product = self.factory_method()
+        return product.speak()
+
+class DogCreator(Creator):
+    def factory_method(self):
+        return Dog()
+
+class CatCreator(Creator):
+    def factory_method(self):
+        return Cat()
+```
+
+### How it Works:
+- `Creator` has an abstract `factory_method` that subclasses like `DogCreator` and `CatCreator` implement.
+- `some_operation` uses the factory method without knowing the exact object type.
+- Adding new types is easy—just create a new subclass.
+
+
+Python’s OOP tools, like properties for controlling attribute access and factory patterns for flexible object creation, make it easy to write clean, scalable code. These features leverage Python’s dynamic nature, giving you powerful ways to design applications. Explore them further to master Python’s OOP!
