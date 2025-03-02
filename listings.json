@@ -2,7 +2,6 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/python-classes/index.html",
       "/posts/python-exceptions/index.html",
       "/posts/Message-passing/index.html",
       "/posts/welcome/index.html"
