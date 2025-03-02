@@ -14,60 +14,60 @@
     "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nVisit my website for more details: bulentsoykan.com"
   },
   {
-    "objectID": "posts/Message-passing/index.html",
-    "href": "posts/Message-passing/index.html",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-classes/index.html",
+    "href": "posts/python-classes/index.html",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "Graph Neural Networks (GNNs) use message passing to aggregate information from neighboring nodes. This process can be understood as simple matrix multiplication using the adjacency matrix and node feature matrix.\n\n\n\nEach node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]\n\n\n\n\n\n\nThe adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2.\n\n\n\n\n\nMessage passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]\n\n\n\n\n\nRaw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]\n\n\n\n\n\nMessage passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion.\n\n\n\n\nimport numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime.\n\n\n\nIf an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")\n\n\n\n\nA finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs\n\n\n\nWhen working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")\n\n\n\nExceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")\n\n\n\nThe following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")\n\n\n\n\nExceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
   },
   {
-    "objectID": "posts/Message-passing/index.html#node-features-as-a-matrix",
-    "href": "posts/Message-passing/index.html#node-features-as-a-matrix",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-classes/index.html#understanding-exceptions",
+    "href": "posts/python-classes/index.html#understanding-exceptions",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "Each node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]"
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime."
   },
   {
-    "objectID": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
-    "href": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-classes/index.html#handling-exceptions-with-tryexcept",
+    "href": "posts/python-classes/index.html#handling-exceptions-with-tryexcept",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "The adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2."
+    "text": "If an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")"
   },
   {
-    "objectID": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
-    "href": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-classes/index.html#the-finally-block-ensuring-code-execution",
+    "href": "posts/python-classes/index.html#the-finally-block-ensuring-code-execution",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "Message passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]"
+    "text": "A finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs"
   },
   {
-    "objectID": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
-    "href": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-classes/index.html#avoiding-keyerror-in-dictionaries",
+    "href": "posts/python-classes/index.html#avoiding-keyerror-in-dictionaries",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "Raw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]"
+    "text": "When working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")"
   },
   {
-    "objectID": "posts/Message-passing/index.html#summary",
-    "href": "posts/Message-passing/index.html#summary",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-classes/index.html#exceptions-as-objects",
+    "href": "posts/python-classes/index.html#exceptions-as-objects",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "Message passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion."
+    "text": "Exceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")"
   },
   {
-    "objectID": "posts/Message-passing/index.html#python-implementation",
-    "href": "posts/Message-passing/index.html#python-implementation",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-classes/index.html#the-most-diabolical-python-antipattern",
+    "href": "posts/python-classes/index.html#the-most-diabolical-python-antipattern",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "import numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
+    "text": "The following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")"
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "posts/python-classes/index.html#conclusion",
+    "href": "posts/python-classes/index.html#conclusion",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
+    "text": "Exceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
   },
   {
     "objectID": "posts/python-exceptions/index.html",
@@ -126,10 +126,66 @@
     "text": "Exceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
   },
   {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
+  },
+  {
+    "objectID": "posts/Message-passing/index.html",
+    "href": "posts/Message-passing/index.html",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Graph Neural Networks (GNNs) use message passing to aggregate information from neighboring nodes. This process can be understood as simple matrix multiplication using the adjacency matrix and node feature matrix.\n\n\n\nEach node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]\n\n\n\n\n\n\nThe adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2.\n\n\n\n\n\nMessage passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]\n\n\n\n\n\nRaw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]\n\n\n\n\n\nMessage passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion.\n\n\n\n\nimport numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
+  },
+  {
+    "objectID": "posts/Message-passing/index.html#node-features-as-a-matrix",
+    "href": "posts/Message-passing/index.html#node-features-as-a-matrix",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Each node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]"
+  },
+  {
+    "objectID": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
+    "href": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "The adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2."
+  },
+  {
+    "objectID": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
+    "href": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Message passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]"
+  },
+  {
+    "objectID": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
+    "href": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Raw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]"
+  },
+  {
+    "objectID": "posts/Message-passing/index.html#summary",
+    "href": "posts/Message-passing/index.html#summary",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "Message passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion."
+  },
+  {
+    "objectID": "posts/Message-passing/index.html#python-implementation",
+    "href": "posts/Message-passing/index.html#python-implementation",
+    "title": "Message Passing in GNNs",
+    "section": "",
+    "text": "import numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Python Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
+    "text": "Python Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
   }
 ]
