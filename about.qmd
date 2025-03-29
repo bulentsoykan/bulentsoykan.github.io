@@ -25,5 +25,7 @@ Beyond research, I enjoy building software that helps people make better decisio
 This blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.
 
 My personal website: [bulentsoykan.com](https://www.bulentsoykan.com/) 
-My professional website: [ist.ucf.edu/faculty/bulent-soykan] (https://www.ist.ucf.edu/faculty/bulent-soykan-ph-d/) 
-My blog: [bulentsoykan.github.io] (https://bulentsoykan.github.io/) 
+
+My professional website: [ist.ucf.edu/faculty/bulent-soykan](https://www.ist.ucf.edu/faculty/bulent-soykan-ph-d/) 
+
+My blog: [bulentsoykan.github.io](https://bulentsoykan.github.io/) 
