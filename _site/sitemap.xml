@@ -2,23 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://bulentsoykan.github.io/about.html</loc>
-    <lastmod>2025-02-22T14:46:57.700Z</lastmod>
+    <lastmod>2025-03-02T21:08:22.927Z</lastmod>
   </url>
   <url>
-    <loc>https://bulentsoykan.github.io/posts/python-classes/index.html</loc>
-    <lastmod>2025-03-02T20:58:56.718Z</lastmod>
+    <loc>https://bulentsoykan.github.io/projects.html</loc>
+    <lastmod>2025-03-02T21:12:11.001Z</lastmod>
   </url>
   <url>
-    <loc>https://bulentsoykan.github.io/posts/python-exceptions/index.html</loc>
-    <lastmod>2025-03-02T20:58:36.053Z</lastmod>
+    <loc>https://bulentsoykan.github.io/posts/Message-passing/index.html</loc>
+    <lastmod>2025-02-17T13:31:42.567Z</lastmod>
   </url>
   <url>
     <loc>https://bulentsoykan.github.io/posts/welcome/index.html</loc>
     <lastmod>2025-02-17T05:28:00.573Z</lastmod>
   </url>
   <url>
-    <loc>https://bulentsoykan.github.io/posts/Message-passing/index.html</loc>
-    <lastmod>2025-02-17T13:31:42.567Z</lastmod>
+    <loc>https://bulentsoykan.github.io/posts/python-exceptions/index.html</loc>
+    <lastmod>2025-03-02T20:58:36.053Z</lastmod>
+  </url>
+  <url>
+    <loc>https://bulentsoykan.github.io/posts/python-class/index.html</loc>
+    <lastmod>2025-03-02T21:08:24.591Z</lastmod>
   </url>
   <url>
     <loc>https://bulentsoykan.github.io/index.html</loc>

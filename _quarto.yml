@@ -7,6 +7,7 @@ website:
   navbar:
     right:
       - about.qmd
+      - projects.qmd
       - icon: github
         href: https://github.com/bulentsoykan
       - icon: twitter
