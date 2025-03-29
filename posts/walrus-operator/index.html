@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Bulent Soykan">
+<meta name="dcterms.date" content="2025-03-29">
 
-<title>Bulent Soykan’s Blog – Bulent Soykan</title>
+<title>Python’s Walrus Operator: A Comprehensive Guide – Bulent Soykan</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +22,60 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./icon.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../icon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,77 +103,19 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Bulent Soykan</span>
     </a>
   </div>
@@ -150,11 +126,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./projects.html"> 
+    <a class="nav-link" href="../../projects.html"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item compact">
@@ -182,215 +158,156 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Bulent Soykan’s Blog</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Python’s Walrus Operator: A Comprehensive Guide</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">code</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bulent Soykan </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 29, 2025</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="YW5hbHlzaXM=">analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y29kZQ==">code <span class="quarto-category-count">(4)</span></div><div class="category" data-category="bmV3cw==">news <span class="quarto-category-count">(2)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
+<section id="introduction-to-the-walrus-operator" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-the-walrus-operator">Introduction to the Walrus Operator (:=)</h2>
+<p>Python 3.8 introduced a new feature that caused quite a stir in the Python community - the walrus operator. Formally known as the “assignment expression operator,” it earned its affectionate nickname due to its resemblance to the eyes and tusks of a walrus when written (<code>:=</code>).</p>
+<p>This seemingly small addition to Python’s syntax provides a powerful way to assign variables within expressions, potentially making code more concise and readable when used appropriately.</p>
+</section>
+<section id="basic-syntax-and-usage" class="level2">
+<h2 class="anchored" data-anchor-id="basic-syntax-and-usage">Basic Syntax and Usage</h2>
+<p>The walrus operator allows you to assign values to variables as part of an expression, rather than as a separate statement. Here’s the basic syntax:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Without walrus operator</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>value <span class="op">=</span> calculate_value()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> value <span class="op">&gt;</span> threshold:</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    process(value)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># With walrus operator</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (value <span class="op">:=</span> calculate_value()) <span class="op">&gt;</span> threshold:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    process(value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this example, the walrus operator accomplishes two things in a single line: 1. It assigns the result of <code>calculate_value()</code> to the variable <code>value</code> 2. It uses that value in the comparison with <code>threshold</code></p>
+</section>
+<section id="common-use-cases" class="level2">
+<h2 class="anchored" data-anchor-id="common-use-cases">Common Use Cases</h2>
+<section id="simplifying-while-loops" class="level3">
+<h3 class="anchored" data-anchor-id="simplifying-while-loops">1. Simplifying While Loops</h3>
+<p>One of the most elegant applications of the walrus operator is in while loops:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Traditional approach</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> get_next_chunk()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> data:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    process(data)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> get_next_chunk()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># With walrus operator</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> data <span class="op">:=</span> get_next_chunk():</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    process(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The walrus version eliminates both the initial assignment and the repeated assignment at the end of the loop.</p>
+</section>
+<section id="conditional-list-comprehensions" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-list-comprehensions">2. Conditional List Comprehensions</h3>
+<p>The walrus operator shines in list comprehensions, especially when filtering based on computed values:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Without walrus operator</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>filtered_results <span class="op">=</span> []</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> data:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> complex_calculation(x)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> result <span class="op">&gt;</span> threshold:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        filtered_results.append(result)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># With walrus operator</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>filtered_results <span class="op">=</span> [result <span class="cf">for</span> x <span class="kw">in</span> data <span class="cf">if</span> (result <span class="op">:=</span> complex_calculation(x)) <span class="op">&gt;</span> threshold]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here, we avoid calculating <code>complex_calculation(x)</code> twice, making the code both more efficient and more readable.</p>
+</section>
+<section id="regex-matching" class="level3">
+<h3 class="anchored" data-anchor-id="regex-matching">3. Regex Matching</h3>
+<p>Regular expression matching often benefits from the walrus operator:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Without walrus operator</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>match <span class="op">=</span> pattern.search(text)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> match:</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    process(match.group(<span class="dv">1</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># With walrus operator</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> match <span class="op">:=</span> pattern.search(text):</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    process(match.group(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="potential-pitfalls" class="level2">
+<h2 class="anchored" data-anchor-id="potential-pitfalls">Potential Pitfalls</h2>
+<p>Despite its benefits, the walrus operator should be used judiciously:</p>
+<section id="scope-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="scope-considerations">Scope Considerations</h3>
+<p>Variables assigned with the walrus operator follow Python’s normal scoping rules:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (x <span class="op">:=</span> <span class="dv">10</span>) <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"x in if block: </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"x outside if block: </span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">"</span>)  <span class="co"># x is still accessible here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In list comprehensions, however, the behavior in Python 3.8 and 3.9 can be surprising:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>[y <span class="cf">for</span> x <span class="kw">in</span> data <span class="cf">if</span> (y <span class="op">:=</span> f(x))]  <span class="co"># In Python 3.8/3.9, y leaks to the outer scope</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This leakage behavior was fixed in Python 3.10.</p>
+</section>
+<section id="readability-concerns" class="level3">
+<h3 class="anchored" data-anchor-id="readability-concerns">Readability Concerns</h3>
+<p>While the walrus operator can make code more concise, it can also make it harder to read if overused or used in complex expressions. Consider the readability implications before using it, especially in team environments.</p>
+</section>
+</section>
+<section id="best-practices" class="level2">
+<h2 class="anchored" data-anchor-id="best-practices">Best Practices</h2>
+<p>For effective use of the walrus operator:</p>
+<ol type="1">
+<li><strong>Use sparingly</strong> - Only when it genuinely improves readability</li>
+<li><strong>Avoid nesting</strong> - Multiple walrus operators in a single expression can be confusing</li>
+<li><strong>Consider parentheses</strong> - The walrus operator has lower precedence than most operators, so use parentheses to clarify</li>
+<li><strong>Follow the style guide</strong> - PEP 8 recommends using spaces around the walrus operator: <code>(x := 1)</code></li>
+</ol>
+</section>
+<section id="python-version-compatibility" class="level2">
+<h2 class="anchored" data-anchor-id="python-version-compatibility">Python Version Compatibility</h2>
+<p>The walrus operator is available in: - Python 3.8 and later - Not available in earlier versions</p>
+<p>If backward compatibility is a concern, you’ll need to avoid this feature.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>The walrus operator represents an elegant solution to a common pattern in Python programming. When used appropriately, it can make your code more concise and expressive. However, like any powerful feature, it requires good judgment to know when and where to apply it.</p>
+<p>By understanding both the capabilities and limitations of the walrus operator, you can add another valuable tool to your Python toolbox, enabling more elegant expressions while maintaining code clarity.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li><a href="https://peps.python.org/pep-0572/">PEP 572 – Assignment Expressions</a></li>
+<li><a href="https://docs.python.org/3/reference/expressions.html#assignment-expressions">Python Documentation: Assignment expressions</a></li>
+</ul>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Y29kZQ==" data-listing-date-sort="1743220800000" data-listing-file-modified-sort="1743261976839" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="617">
-<div class="thumbnail">
-<p><a href="./posts/walrus-operator/index.html" class="no-external"></a></p><a href="./posts/walrus-operator/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/walrus-operator/walrus.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/walrus-operator/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/walrus-operator/index.html" class="no-external">Python’s Walrus Operator: A Comprehensive Guide</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/walrus-operator/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/walrus-operator/index.html" class="no-external">Python 3.8 introduced a new feature that caused quite a stir in the Python community - the walrus operator. Formally known as the “assignment expression operator,” it earned…<code></code></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/walrus-operator/index.html" class="no-external">
-<div class="listing-date">
-Mar 29, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Y29kZQ==" data-listing-date-sort="1740805200000" data-listing-file-modified-sort="1740949704591" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="626">
-<div class="thumbnail">
-<p><a href="./posts/python-class/index.html" class="no-external"></a></p><a href="./posts/python-class/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/python-class/classes.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/python-class/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/python-class/index.html" class="no-external">Python Classes, Properties, and Factory Patterns</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/python-class/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/python-class/index.html" class="no-external">In Python, <strong>object-oriented programming (OOP)</strong> is a key approach for writing reusable and modular code. A <strong>class</strong> is like a blueprint that defines how <strong>objects</strong>, which are…<strong></strong><strong></strong></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/python-class/index.html" class="no-external">
-<div class="listing-date">
-Mar 1, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Y29kZQ==" data-listing-date-sort="1740200400000" data-listing-file-modified-sort="1740949116053" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="405">
-<div class="thumbnail">
-<p><a href="./posts/python-exceptions/index.html" class="no-external"></a></p><a href="./posts/python-exceptions/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/python-exceptions/exception.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/python-exceptions/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/python-exceptions/index.html" class="no-external">Python Exceptions and Errors</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/python-exceptions/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/python-exceptions/index.html" class="no-external">An <strong>exception</strong> is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/python-exceptions/index.html" class="no-external">
-<div class="listing-date">
-Feb 22, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="bmV3cyUyQ2NvZGUlMkNhbmFseXNpcw==" data-listing-date-sort="1739682000000" data-listing-file-modified-sort="1739799102567" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="689">
-<div class="thumbnail">
-<p><a href="./posts/Message-passing/index.html" class="no-external"></a></p><a href="./posts/Message-passing/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/Message-passing/graph.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/Message-passing/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Message-passing/index.html" class="no-external">Message Passing in GNNs</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/Message-passing/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">
-news
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('YW5hbHlzaXM='); return false;">
-analysis
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/Message-passing/index.html" class="no-external">Graph Neural Networks (GNNs) use <strong>message passing</strong> to aggregate information from neighboring nodes. This process can be understood as simple <strong>matrix multiplication</strong> using the <strong>adj…</strong><strong></strong></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/Message-passing/index.html" class="no-external">
-<div class="listing-date">
-Feb 16, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="bmV3cw==" data-listing-date-sort="1739422800000" data-listing-file-modified-sort="1739770080573" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="96">
-<div class="thumbnail">
-<p><a href="./posts/welcome/index.html" class="no-external"></a></p><a href="./posts/welcome/index.html" class="no-external">
-<p class="card-img-top"><img src="posts/welcome/thumbnail.jpg"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/welcome/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/welcome/index.html" class="no-external">Welcome To My Blog</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/welcome/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">
-news
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/welcome/index.html" class="no-external">This is the first post in my blog. Welcome!</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/welcome/index.html" class="no-external">
-<div class="listing-date">
-Feb 13, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

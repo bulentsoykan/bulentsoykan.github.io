@@ -4,14 +4,14 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nMy personal website: bulentsoykan.com My professional website: [ist.ucf.edu/faculty/bulent-soykan] (https://www.ist.ucf.edu/faculty/bulent-soykan-ph-d/) My blog: [bulentsoykan.github.io] (https://bulentsoykan.github.io/)"
+    "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nMy personal website: bulentsoykan.com\nMy professional website: ist.ucf.edu/faculty/bulent-soykan\nMy blog: bulentsoykan.github.io"
   },
   {
     "objectID": "about.html#bulent-soykan",
     "href": "about.html#bulent-soykan",
     "title": "About",
     "section": "",
-    "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nMy personal website: bulentsoykan.com My professional website: [ist.ucf.edu/faculty/bulent-soykan] (https://www.ist.ucf.edu/faculty/bulent-soykan-ph-d/) My blog: [bulentsoykan.github.io] (https://bulentsoykan.github.io/)"
+    "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nMy personal website: bulentsoykan.com\nMy professional website: ist.ucf.edu/faculty/bulent-soykan\nMy blog: bulentsoykan.github.io"
   },
   {
     "objectID": "posts/Message-passing/index.html",
@@ -68,6 +68,69 @@
     "title": "Welcome To My Blog",
     "section": "",
     "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html",
+    "href": "posts/walrus-operator/index.html",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "",
+    "text": "Python 3.8 introduced a new feature that caused quite a stir in the Python community - the walrus operator. Formally known as the “assignment expression operator,” it earned its affectionate nickname due to its resemblance to the eyes and tusks of a walrus when written (:=).\nThis seemingly small addition to Python’s syntax provides a powerful way to assign variables within expressions, potentially making code more concise and readable when used appropriately."
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#introduction-to-the-walrus-operator",
+    "href": "posts/walrus-operator/index.html#introduction-to-the-walrus-operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "",
+    "text": "Python 3.8 introduced a new feature that caused quite a stir in the Python community - the walrus operator. Formally known as the “assignment expression operator,” it earned its affectionate nickname due to its resemblance to the eyes and tusks of a walrus when written (:=).\nThis seemingly small addition to Python’s syntax provides a powerful way to assign variables within expressions, potentially making code more concise and readable when used appropriately."
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#basic-syntax-and-usage",
+    "href": "posts/walrus-operator/index.html#basic-syntax-and-usage",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "Basic Syntax and Usage",
+    "text": "Basic Syntax and Usage\nThe walrus operator allows you to assign values to variables as part of an expression, rather than as a separate statement. Here’s the basic syntax:\n# Without walrus operator\nvalue = calculate_value()\nif value &gt; threshold:\n    process(value)\n\n# With walrus operator\nif (value := calculate_value()) &gt; threshold:\n    process(value)\nIn this example, the walrus operator accomplishes two things in a single line: 1. It assigns the result of calculate_value() to the variable value 2. It uses that value in the comparison with threshold"
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#common-use-cases",
+    "href": "posts/walrus-operator/index.html#common-use-cases",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "Common Use Cases",
+    "text": "Common Use Cases\n\n1. Simplifying While Loops\nOne of the most elegant applications of the walrus operator is in while loops:\n# Traditional approach\ndata = get_next_chunk()\nwhile data:\n    process(data)\n    data = get_next_chunk()\n\n# With walrus operator\nwhile data := get_next_chunk():\n    process(data)\nThe walrus version eliminates both the initial assignment and the repeated assignment at the end of the loop.\n\n\n2. Conditional List Comprehensions\nThe walrus operator shines in list comprehensions, especially when filtering based on computed values:\n# Without walrus operator\nfiltered_results = []\nfor x in data:\n    result = complex_calculation(x)\n    if result &gt; threshold:\n        filtered_results.append(result)\n\n# With walrus operator\nfiltered_results = [result for x in data if (result := complex_calculation(x)) &gt; threshold]\nHere, we avoid calculating complex_calculation(x) twice, making the code both more efficient and more readable.\n\n\n3. Regex Matching\nRegular expression matching often benefits from the walrus operator:\n# Without walrus operator\nmatch = pattern.search(text)\nif match:\n    process(match.group(1))\n\n# With walrus operator\nif match := pattern.search(text):\n    process(match.group(1))"
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#potential-pitfalls",
+    "href": "posts/walrus-operator/index.html#potential-pitfalls",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "Potential Pitfalls",
+    "text": "Potential Pitfalls\nDespite its benefits, the walrus operator should be used judiciously:\n\nScope Considerations\nVariables assigned with the walrus operator follow Python’s normal scoping rules:\nif (x := 10) &gt; 5:\n    print(f\"x in if block: {x}\")\nprint(f\"x outside if block: {x}\")  # x is still accessible here\nIn list comprehensions, however, the behavior in Python 3.8 and 3.9 can be surprising:\n[y for x in data if (y := f(x))]  # In Python 3.8/3.9, y leaks to the outer scope\nThis leakage behavior was fixed in Python 3.10.\n\n\nReadability Concerns\nWhile the walrus operator can make code more concise, it can also make it harder to read if overused or used in complex expressions. Consider the readability implications before using it, especially in team environments."
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#best-practices",
+    "href": "posts/walrus-operator/index.html#best-practices",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "Best Practices",
+    "text": "Best Practices\nFor effective use of the walrus operator:\n\nUse sparingly - Only when it genuinely improves readability\nAvoid nesting - Multiple walrus operators in a single expression can be confusing\nConsider parentheses - The walrus operator has lower precedence than most operators, so use parentheses to clarify\nFollow the style guide - PEP 8 recommends using spaces around the walrus operator: (x := 1)"
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#python-version-compatibility",
+    "href": "posts/walrus-operator/index.html#python-version-compatibility",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "Python Version Compatibility",
+    "text": "Python Version Compatibility\nThe walrus operator is available in: - Python 3.8 and later - Not available in earlier versions\nIf backward compatibility is a concern, you’ll need to avoid this feature."
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#conclusion",
+    "href": "posts/walrus-operator/index.html#conclusion",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "Conclusion",
+    "text": "Conclusion\nThe walrus operator represents an elegant solution to a common pattern in Python programming. When used appropriately, it can make your code more concise and expressive. However, like any powerful feature, it requires good judgment to know when and where to apply it.\nBy understanding both the capabilities and limitations of the walrus operator, you can add another valuable tool to your Python toolbox, enabling more elegant expressions while maintaining code clarity."
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#references",
+    "href": "posts/walrus-operator/index.html#references",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "References",
+    "text": "References\n\nPEP 572 – Assignment Expressions\nPython Documentation: Assignment expressions"
   },
   {
     "objectID": "posts/python-exceptions/index.html",
@@ -158,6 +221,6 @@
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Python Classes, Properties, and Factory Patterns\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 1, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
+    "text": "Python’s Walrus Operator: A Comprehensive Guide\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 29, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Classes, Properties, and Factory Patterns\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 1, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
   }
 ]

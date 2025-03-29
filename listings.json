@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/walrus-operator/index.html",
       "/posts/python-class/index.html",
       "/posts/python-exceptions/index.html",
       "/posts/Message-passing/index.html",
