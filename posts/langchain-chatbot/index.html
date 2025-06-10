@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Bulent Soykan">
+<meta name="dcterms.date" content="2025-06-09">
 
-<title>Bulent Soykan’s Blog – Bulent Soykan</title>
+<title>Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit – Bulent Soykan</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +22,60 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./icon.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../icon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,77 +103,19 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Bulent Soykan</span>
     </a>
   </div>
@@ -150,11 +126,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./projects.html"> 
+    <a class="nav-link" href="../../projects.html"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item compact">
@@ -182,257 +158,132 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Bulent Soykan’s Blog</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">AI</div>
+                <div class="quarto-category">news</div>
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">analysis</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bulent Soykan </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 9, 2025</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(6)</span></div><div class="category" data-category="QUk=">AI <span class="quarto-category-count">(1)</span></div><div class="category" data-category="YW5hbHlzaXM=">analysis <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Y29kZQ==">code <span class="quarto-category-count">(5)</span></div><div class="category" data-category="bmV3cw==">news <span class="quarto-category-count">(3)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Have you ever wished you could <em>chat</em> with your own notes, asking questions and getting instant, context-aware answers? In this project, I built a conversational AI chatbot that does exactly that—using your OneNote-style notes as its knowledge base. Powered by <a href="https://github.com/langchain-ai/langchain">LangChain</a>, <a href="https://github.com/facebookresearch/faiss">FAISS</a>, and <a href="https://streamlit.io/">Streamlit</a>, this chatbot can be run both in the terminal and as a web app.</p>
+</section>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+<p>As technical consultants, marketers, or support engineers, we often keep troubleshooting guides, customer notes, and solution summaries in text files or note-taking apps. Searching through these manually is tedious. What if you could just ask, “What should I do if the SSL status in Pardot shows ERROR?” and get a precise, referenced answer from your own notes?</p>
+</section>
+<section id="how-it-works" class="level2">
+<h2 class="anchored" data-anchor-id="how-it-works">How It Works</h2>
+<p>The chatbot uses <strong>retrieval-augmented generation</strong>:</p>
+<ol type="1">
+<li><strong>Load Notes</strong>: Your notes are stored in a plain text file (e.g., <code>customer_xy_notes.txt</code>).</li>
+<li><strong>Split &amp; Embed</strong>: The notes are split into chunks and embedded using HuggingFace models.</li>
+<li><strong>Semantic Search</strong>: When you ask a question, the system finds the most relevant note snippets using FAISS.</li>
+<li><strong>LLM Answering</strong>: A local LLM (via Ollama) generates an answer, referencing the retrieved context.</li>
+<li><strong>Conversational Memory</strong>: The chatbot remembers previous questions and answers for context.</li>
+</ol>
+</section>
+<section id="example-troubleshooting-ssl-errors-in-pardot" class="level2">
+<h2 class="anchored" data-anchor-id="example-troubleshooting-ssl-errors-in-pardot">Example: Troubleshooting SSL Errors in Pardot</h2>
+<p>Here’s a sample note from the knowledge base:</p>
+<blockquote class="blockquote">
+<p><strong>Problem Summary</strong><br>
+A new error appeared in the Domain Management section of Pardot. The SSL Status of a tracker domain was marked as “ERROR”.<br>
+…<br>
+<strong>Solution</strong><br>
+A support ticket was opened with Salesforce, referencing this known issue. Salesforce confirmed the problem was not related to the certificate itself, but due to a glitch in their internal validation system. They manually reset the SSL status, and the domain now shows “Enabled” again.</p>
+</blockquote>
+<p>When you ask the chatbot, “How do I fix SSL Status ERROR in Pardot?”, it will summarize the above and guide you to check the certificate, then contact Salesforce support if needed.</p>
+</section>
+<section id="running-the-chatbot" class="level2">
+<h2 class="anchored" data-anchor-id="running-the-chatbot">Running the Chatbot</h2>
+<section id="terminal-interface" class="level3">
+<h3 class="anchored" data-anchor-id="terminal-interface">Terminal Interface</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> chatbot_terminal.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="streamlit-web-app" class="level3">
+<h3 class="anchored" data-anchor-id="streamlit-web-app">Streamlit Web App</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">streamlit</span> run streamlit_app.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You’ll get a friendly chat UI in your browser:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="screenshot.png" class="img-fluid figure-img"></p>
+<figcaption>Streamlit Chatbot Screenshot</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="customizing-for-your-notes" class="level2">
+<h2 class="anchored" data-anchor-id="customizing-for-your-notes">Customizing for Your Notes</h2>
+<ul>
+<li>Replace <code>customer_xy_notes.txt</code> with your own notes.</li>
+<li>The chatbot will automatically use your content as its knowledge base.</li>
+</ul>
+</section>
+<section id="project-structure" class="level2">
+<h2 class="anchored" data-anchor-id="project-structure">Project Structure</h2>
+<ul>
+<li><code>chatbot_core_onenote.py</code>: Core logic (loading, embedding, retrieval, LLM).</li>
+<li><code>streamlit_app.py</code>: Web interface.</li>
+<li><code>chatbot_terminal.py</code>: Terminal interface.</li>
+<li><code>customer_xy_notes.txt</code>: Example notes file.</li>
+</ul>
+</section>
+<section id="why-langchain-and-streamlit" class="level2">
+<h2 class="anchored" data-anchor-id="why-langchain-and-streamlit">Why LangChain and Streamlit?</h2>
+<ul>
+<li><strong>LangChain</strong>: Makes it easy to combine retrieval and LLMs for question answering.</li>
+<li><strong>FAISS</strong>: Fast, scalable semantic search.</li>
+<li><strong>Streamlit</strong>: Instantly turns Python scripts into shareable web apps.</li>
+</ul>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This project demonstrates how easy it is to build a personal knowledge chatbot using modern open-source tools. Whether you’re supporting customers, onboarding new team members, or just want smarter access to your notes, this approach can save you time and effort.</p>
+<hr>
+<p><em>Try it out, and let me know what you build!</em></p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="QUklMkNuZXdzJTJDY29kZSUyQ2FuYWx5c2lz" data-listing-date-sort="1749441600000" data-listing-file-modified-sort="1749517575712" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="455">
-<div class="thumbnail">
-<p><a href="./posts/langchain-chatbot/index.html" class="no-external"></a></p><a href="./posts/langchain-chatbot/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/langchain-chatbot/langchain.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/langchain-chatbot/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/langchain-chatbot/index.html" class="no-external">Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/langchain-chatbot/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('QUk='); return false;">
-AI
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">
-news
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('YW5hbHlzaXM='); return false;">
-analysis
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/langchain-chatbot/index.html" class="no-external">Have you ever wished you could <em>chat</em> with your own notes, asking questions and getting instant, context-aware answers? In this project, I built a conversational AI chatbot…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/langchain-chatbot/index.html" class="no-external">
-<div class="listing-date">
-Jun 9, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Y29kZQ==" data-listing-date-sort="1743220800000" data-listing-file-modified-sort="1743262102511" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="616">
-<div class="thumbnail">
-<p><a href="./posts/walrus-operator/index.html" class="no-external"></a></p><a href="./posts/walrus-operator/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/walrus-operator/walrus.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/walrus-operator/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/walrus-operator/index.html" class="no-external">Python’s Walrus Operator</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/walrus-operator/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/walrus-operator/index.html" class="no-external">Python 3.8 introduced a new feature that caused quite a stir in the Python community - the walrus operator. Formally known as the “assignment expression operator,” it earned…<code></code></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/walrus-operator/index.html" class="no-external">
-<div class="listing-date">
-Mar 29, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Y29kZQ==" data-listing-date-sort="1740805200000" data-listing-file-modified-sort="1740949704591" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="626">
-<div class="thumbnail">
-<p><a href="./posts/python-class/index.html" class="no-external"></a></p><a href="./posts/python-class/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/python-class/classes.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/python-class/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/python-class/index.html" class="no-external">Python Classes, Properties, and Factory Patterns</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/python-class/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/python-class/index.html" class="no-external">In Python, <strong>object-oriented programming (OOP)</strong> is a key approach for writing reusable and modular code. A <strong>class</strong> is like a blueprint that defines how <strong>objects</strong>, which are…<strong></strong><strong></strong></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/python-class/index.html" class="no-external">
-<div class="listing-date">
-Mar 1, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="Y29kZQ==" data-listing-date-sort="1740200400000" data-listing-file-modified-sort="1740949116053" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="405">
-<div class="thumbnail">
-<p><a href="./posts/python-exceptions/index.html" class="no-external"></a></p><a href="./posts/python-exceptions/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/python-exceptions/exception.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/python-exceptions/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/python-exceptions/index.html" class="no-external">Python Exceptions and Errors</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/python-exceptions/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/python-exceptions/index.html" class="no-external">An <strong>exception</strong> is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/python-exceptions/index.html" class="no-external">
-<div class="listing-date">
-Feb 22, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="bmV3cyUyQ2NvZGUlMkNhbmFseXNpcw==" data-listing-date-sort="1739682000000" data-listing-file-modified-sort="1739799102567" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="689">
-<div class="thumbnail">
-<p><a href="./posts/Message-passing/index.html" class="no-external"></a></p><a href="./posts/Message-passing/index.html" class="no-external">
-<p><img loading="lazy" src="./posts/Message-passing/graph.png" class="thumbnail-image"></p>
-</a><p><a href="./posts/Message-passing/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/Message-passing/index.html" class="no-external">Message Passing in GNNs</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/Message-passing/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">
-news
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('YW5hbHlzaXM='); return false;">
-analysis
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/Message-passing/index.html" class="no-external">Graph Neural Networks (GNNs) use <strong>message passing</strong> to aggregate information from neighboring nodes. This process can be understood as simple <strong>matrix multiplication</strong> using the <strong>adj…</strong><strong></strong></a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/Message-passing/index.html" class="no-external">
-<div class="listing-date">
-Feb 16, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="bmV3cw==" data-listing-date-sort="1739422800000" data-listing-file-modified-sort="1739770080573" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="96">
-<div class="thumbnail">
-<p><a href="./posts/welcome/index.html" class="no-external"></a></p><a href="./posts/welcome/index.html" class="no-external">
-<p class="card-img-top"><img src="posts/welcome/thumbnail.jpg"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/welcome/index.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/welcome/index.html" class="no-external">Welcome To My Blog</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/welcome/index.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">
-news
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/welcome/index.html" class="no-external">This is the first post in my blog. Welcome!</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/welcome/index.html" class="no-external">
-<div class="listing-date">
-Feb 13, 2025
-</div>
-<div class="listing-author">
-Bulent Soykan
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
