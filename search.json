@@ -14,13 +14,6 @@
     "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nMy personal website: bulentsoykan.com\nMy professional website: ist.ucf.edu/faculty/bulent-soykan\nMy blog: bulentsoykan.github.io"
   },
   {
-    "objectID": "posts/Probabilistic-Generative-Models/index.html",
-    "href": "posts/Probabilistic-Generative-Models/index.html",
-    "title": "Tabular Data and PGMs",
-    "section": "",
-    "text": "The Tabular Data Fallacy: Why We’ve Only Scratched the Surface of AI’s Real Goldmine\nThere’s a pervasive narrative in the world of AI, a comforting story we tell ourselves on Kaggle leaderboards and in startup pitch decks. It’s the story of the “solved problem,” and its main character is tabular data. With the undisputed power of libraries like XGBoost and LightGBM, and a relentless focus on benchmark accuracy, we’ve convinced ourselves that the major challenges of data in rows and columns are behind us.\nThis narrative is a fallacy. And it’s holding us back.\nIt’s true that if your goal is to squeeze another fraction of a percent of accuracy out of a perfectly clean, fully labeled dataset, then yes, the path is well-worn. But that’s not the world real businesses operate in. The real world is a chaotic landscape of incomplete records, unlabeled information, and shocking, unpredicted events.\nFor years, I’ve watched the AI community chase incremental gains on sanitized problems while ignoring the foundational, high-value challenges that plague every major industry. The reason for this oversight is our collective fixation on a single class of tools: discriminative models.\nI’m writing this to tell you there’s a better way. The future of AI in the enterprise, the truly transformative and defensible innovations, will come from a different approach entirely. They will be built on probabilistic generative models.\n\n\nThe Allure and Limits of the Discriminative Path\nTo understand where we need to go, we must first be honest about where we are. The vast majority of machine learning applications on tabular data rely on discriminative models.\nA discriminative model learns to separate data points. Its entire purpose is to find a boundary—a line or a complex, high-dimensional surface—that optimally divides one class from another. It learns the conditional probability, \\(P(Y|X)\\).\nThink of a bank’s loan approval model. Its goal is to predict default risk.\n\nThe Input (X): Applicant data like credit_score, income, age, years_at_job.\nThe Output (Y): A binary label, Default or No Default.\n\nThe model takes this data and learns a function that, for any new applicant, draws a line and decides which side they fall on. It is incredibly effective at this one job. This is why Gradient Boosted Decision Trees (GBDTs) dominate—they are master boundary-finders.\nBut this singular focus is also their greatest weakness. A discriminative model is like a student who has crammed for a multiple-choice test. They can pick the right answer from a list of options with remarkable accuracy, but they lack any foundational knowledge of the subject. They don’t know why an answer is correct, only that it matches the patterns they memorized.\nThis leads to critical failures when faced with real-world messiness: * It sees a blank on the test (missing data) and panics, forcing you to guess the answer for it. * It cannot learn from the textbook (unlabeled data), only from the pre-answered practice tests. * It has no way of knowing if a question is from a completely different subject (Out-of-Distribution data) and will confidently provide a nonsensical answer.\nThis isn’t a solid foundation for building robust, intelligent systems. It’s a house of cards.\n\n\nThe Generative Leap—From Prediction to True Understanding\nA probabilistic generative model takes a radically different approach. It doesn’t just learn the boundary between classes; it learns the inherent structure of the data itself. Its goal is to learn the full joint probability distribution, \\(P(X, Y)\\).\nLet’s return to our bank example. A generative model wouldn’t just learn how to separate defaulters from non-defaulters. It would learn the “story” of the entire applicant pool. It would understand the complex interplay between all the variables: how income relates to age, how that combination relates to the requested loan amount, and how all those factors together define a “typical” applicant.\nBecause it learns the distribution of the data, it can generate new, plausible data points. It can create a profile of a synthetic-but-realistic applicant. This creative ability is the key that unlocks solutions to previously intractable problems.\nThe family of generative models is diverse and powerful:\n\nVariational Autoencoders (VAEs): Think of a VAE as a master artist and forger. The “encoder” part of the network looks at a real applicant’s profile and creates a compressed, abstract sketch of them (in what we call the latent space). The “decoder” part is trained to take that sketch and perfectly reconstruct the original profile. By mastering this process of sketching and reconstructing, the decoder becomes a generator. We can give it new, random sketches, and it will create entirely new, realistic applicant profiles.\nGenerative Adversarial Networks (GANs): This is the famous model with two dueling neural networks. A Generator creates fake applicant profiles from scratch. A Discriminator (a discriminative model!) acts as a detective, trying to tell the difference between the real applicants and the fakes. The two are locked in an escalating arms race, with the Generator becoming an incredibly sophisticated forger, capable of producing synthetic data that is indistinguishable from reality.\nFlow-based Models: Imagine starting with a simple block of marble (a simple, known probability distribution like a Gaussian). A flow-based model is like a master sculptor who applies a series of precise, reversible chisels and cuts (invertible transformations) to shape the block into a complex statue (the distribution of your applicant data). Because every step is reversible, you can not only create a statue from the block but also calculate the exact sequence of steps to turn the statue back into the block, giving you a precise mathematical grasp of the data’s probability.\n\n\n\n\nSolving the “Impossible” Problems—Generative Models in Action\nThis all sounds great in theory. But let’s look at how this directly solves the high-value problems that leave purely discriminative models helpless.\n\nConquering Missing Features\n\nThe Status Quo: An applicant for a loan, a 25-year-old software engineer, leaves the years_at_current_job field blank. The standard approach is crude: impute the column’s average, which might be 5.2 years. This instantly makes the applicant’s profile nonsensical and contradictory.\nThe Generative Approach: A trained generative model looks at the rest of the applicant’s data: age: 25, profession: software_engineer, education: master's_degree. Having learned the joint distribution of tens of thousands of applicants, it understands the strong correlation between these features. It performs conditional sampling. It essentially asks, “For the universe of 25-year-old software engineers with a Master’s degree in my dataset, what is the probability distribution of their ‘years at current job’?” The answer is likely a distribution heavily skewed towards 1-3 years. The model then samples from this specific, conditional distribution to fill in the blank. It doesn’t guess; it makes a highly informed, contextually-aware inference.\n\n\n\nThe Economics of Unlabeled Data\n\nThe Pain Point: A hospital wants to build an AI model to predict the risk of sepsis, a life-threatening condition. They have electronic health records for 2 million patients, a treasure trove of unlabeled data (vitals, lab results, etc.). However, getting expert doctors to retrospectively review each case and apply a definitive Sepsis or No Sepsis label is prohibitively expensive. They can only afford to label 5,000 records.\nThe Generative Solution (Semi-Supervised Learning): This is where generative models create immense economic value.\n\nUnsupervised Pre-training: We first train a generative model (like a VAE) on all 2 million unlabeled patient records. The model’s task is simply to understand the data’s structure—to learn what a “normal” patient’s trajectory looks like, what common patterns in lab results are, and how different vitals relate to each other. It builds a rich, internal representation of human physiology as captured in the data.\nSupervised Fine-tuning: Now, we take the 5,000 labeled records. We use this small, precious dataset to fine-tune the pre-trained model. Because the model has already done 99% of the work by learning the data’s landscape, the labeled data simply acts as a guide, putting names to the regions the model has already discovered. The result is a highly accurate sepsis prediction model that approaches the performance of a model trained on millions of labeled records, but for a tiny fraction of the cost.\n\n\n\n\nThe Ultimate Safety Net—Out-of-Distribution (OOD) Detection\n\nThe Silent Failure: A hedge fund trains a trading algorithm on market data from 2010-2019. The model performs brilliantly in back-testing. In 2020, the COVID-19 pandemic creates unprecedented market volatility. The discriminative model, only knowing how to classify patterns it has seen before, continues to operate with high confidence, misinterpreting the new reality and leading to catastrophic losses. It has no mechanism for recognizing that the fundamental rules of the game have changed.\nThe Generative Alarm Bell: A generative model is also trained on the 2010-2019 data. It doesn’t just learn trading signals; it learns the probability distribution of a “normal” market day. When the pandemic-era data starts streaming in, the model calculates the likelihood of this new data under its learned distribution. The probability is infinitesimally small. It immediately flags this data as Out-of-Distribution. It essentially raises a giant red flag and says: “EMERGENCY. The world I was trained on no longer exists. My predictions are unreliable. Human intervention is required.” It knows what it doesn’t know, which is arguably the most critical feature of any AI system deployed in a high-stakes, dynamic environment.\n\n\n\n\nA Call for True Innovation\nFor too long, we have defined “progress” in AI by climbing a few points up a leaderboard on a static dataset. This is not innovation; it’s optimization.\nThe real opportunities—the massive markets—lie in solving the foundational problems that every enterprise faces. They are in building systems that are robust to the chaos of reality, that can learn from all available data, not just the perfectly curated bits, and that are smart enough to know when they are out of their depth.\nThese are generative problems. They require a shift in our thinking, away from simply drawing boundaries and towards the ambitious goal of deep, probabilistic understanding. To the founders, the data scientists, and the investors, I say: look past the low-hanging fruit. The most valuable work is yet to be done, in the rich, untapped frontier of tabular data."
-  },
-  {
     "objectID": "posts/Message-passing/index.html",
     "href": "posts/Message-passing/index.html",
     "title": "Message Passing in GNNs",
@@ -79,56 +72,63 @@
   {
     "objectID": "posts/walrus-operator/index.html",
     "href": "posts/walrus-operator/index.html",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "",
     "text": "Python 3.8 introduced a new feature that caused quite a stir in the Python community - the walrus operator. Formally known as the “assignment expression operator,” it earned its affectionate nickname due to its resemblance to the eyes and tusks of a walrus when written (:=).\nThis seemingly small addition to Python’s syntax provides a powerful way to assign variables within expressions, potentially making code more concise and readable when used appropriately."
   },
   {
     "objectID": "posts/walrus-operator/index.html#introduction-to-the-walrus-operator",
     "href": "posts/walrus-operator/index.html#introduction-to-the-walrus-operator",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "",
     "text": "Python 3.8 introduced a new feature that caused quite a stir in the Python community - the walrus operator. Formally known as the “assignment expression operator,” it earned its affectionate nickname due to its resemblance to the eyes and tusks of a walrus when written (:=).\nThis seemingly small addition to Python’s syntax provides a powerful way to assign variables within expressions, potentially making code more concise and readable when used appropriately."
   },
   {
     "objectID": "posts/walrus-operator/index.html#basic-syntax-and-usage",
     "href": "posts/walrus-operator/index.html#basic-syntax-and-usage",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "Basic Syntax and Usage",
     "text": "Basic Syntax and Usage\nThe walrus operator allows you to assign values to variables as part of an expression, rather than as a separate statement. Here’s the basic syntax:\n# Without walrus operator\nvalue = calculate_value()\nif value &gt; threshold:\n    process(value)\n\n# With walrus operator\nif (value := calculate_value()) &gt; threshold:\n    process(value)\nIn this example, the walrus operator accomplishes two things in a single line: 1. It assigns the result of calculate_value() to the variable value 2. It uses that value in the comparison with threshold"
   },
   {
     "objectID": "posts/walrus-operator/index.html#common-use-cases",
     "href": "posts/walrus-operator/index.html#common-use-cases",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "Common Use Cases",
     "text": "Common Use Cases\n\n1. Simplifying While Loops\nOne of the most elegant applications of the walrus operator is in while loops:\n# Traditional approach\ndata = get_next_chunk()\nwhile data:\n    process(data)\n    data = get_next_chunk()\n\n# With walrus operator\nwhile data := get_next_chunk():\n    process(data)\nThe walrus version eliminates both the initial assignment and the repeated assignment at the end of the loop.\n\n\n2. Conditional List Comprehensions\nThe walrus operator shines in list comprehensions, especially when filtering based on computed values:\n# Without walrus operator\nfiltered_results = []\nfor x in data:\n    result = complex_calculation(x)\n    if result &gt; threshold:\n        filtered_results.append(result)\n\n# With walrus operator\nfiltered_results = [result for x in data if (result := complex_calculation(x)) &gt; threshold]\nHere, we avoid calculating complex_calculation(x) twice, making the code both more efficient and more readable.\n\n\n3. Regex Matching\nRegular expression matching often benefits from the walrus operator:\n# Without walrus operator\nmatch = pattern.search(text)\nif match:\n    process(match.group(1))\n\n# With walrus operator\nif match := pattern.search(text):\n    process(match.group(1))"
   },
   {
     "objectID": "posts/walrus-operator/index.html#potential-pitfalls",
     "href": "posts/walrus-operator/index.html#potential-pitfalls",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "Potential Pitfalls",
     "text": "Potential Pitfalls\nDespite its benefits, the walrus operator should be used judiciously:\n\nScope Considerations\nVariables assigned with the walrus operator follow Python’s normal scoping rules:\nif (x := 10) &gt; 5:\n    print(f\"x in if block: {x}\")\nprint(f\"x outside if block: {x}\")  # x is still accessible here\nIn list comprehensions, however, the behavior in Python 3.8 and 3.9 can be surprising:\n[y for x in data if (y := f(x))]  # In Python 3.8/3.9, y leaks to the outer scope\nThis leakage behavior was fixed in Python 3.10.\n\n\nReadability Concerns\nWhile the walrus operator can make code more concise, it can also make it harder to read if overused or used in complex expressions. Consider the readability implications before using it, especially in team environments."
   },
   {
     "objectID": "posts/walrus-operator/index.html#best-practices",
     "href": "posts/walrus-operator/index.html#best-practices",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "Best Practices",
     "text": "Best Practices\nFor effective use of the walrus operator:\n\nUse sparingly - Only when it genuinely improves readability\nAvoid nesting - Multiple walrus operators in a single expression can be confusing\nConsider parentheses - The walrus operator has lower precedence than most operators, so use parentheses to clarify\nFollow the style guide - PEP 8 recommends using spaces around the walrus operator: (x := 1)"
   },
   {
     "objectID": "posts/walrus-operator/index.html#python-version-compatibility",
     "href": "posts/walrus-operator/index.html#python-version-compatibility",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "Python Version Compatibility",
-    "text": "Python Version Compatibility\nThe walrus operator is available in: - Python 3.8 and later - Not available in earlier versions\nIf backward compatibility is a concern, you’ll need to avoid this feature.\nThe walrus operator represents an elegant solution to a common pattern in Python programming. When used appropriately, it can make your code more concise and expressive. However, like any powerful feature, it requires good judgment to know when and where to apply it.\nBy understanding both the capabilities and limitations of the walrus operator, you can add another valuable tool to your Python toolbox, enabling more elegant expressions while maintaining code clarity."
+    "text": "Python Version Compatibility\nThe walrus operator is available in: - Python 3.8 and later - Not available in earlier versions\nIf backward compatibility is a concern, you’ll need to avoid this feature."
+  },
+  {
+    "objectID": "posts/walrus-operator/index.html#conclusion",
+    "href": "posts/walrus-operator/index.html#conclusion",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
+    "section": "Conclusion",
+    "text": "Conclusion\nThe walrus operator represents an elegant solution to a common pattern in Python programming. When used appropriately, it can make your code more concise and expressive. However, like any powerful feature, it requires good judgment to know when and where to apply it.\nBy understanding both the capabilities and limitations of the walrus operator, you can add another valuable tool to your Python toolbox, enabling more elegant expressions while maintaining code clarity."
   },
   {
     "objectID": "posts/walrus-operator/index.html#references",
     "href": "posts/walrus-operator/index.html#references",
-    "title": "Python’s Walrus Operator",
+    "title": "Python’s Walrus Operator: A Comprehensive Guide",
     "section": "References",
     "text": "References\n\nPEP 572 – Assignment Expressions\nPython Documentation: Assignment expressions"
   },
@@ -189,76 +189,6 @@
     "text": "Exceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
   },
   {
-    "objectID": "posts/langchain-chatbot/index.html",
-    "href": "posts/langchain-chatbot/index.html",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "",
-    "text": "Have you ever wished you could chat with your own notes, asking questions and getting instant, context-aware answers? In this project, I built a conversational AI chatbot that does exactly that—using your OneNote-style notes as its knowledge base. Powered by LangChain, FAISS, and Streamlit, this chatbot can be run both in the terminal and as a web app."
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#introduction",
-    "href": "posts/langchain-chatbot/index.html#introduction",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "",
-    "text": "Have you ever wished you could chat with your own notes, asking questions and getting instant, context-aware answers? In this project, I built a conversational AI chatbot that does exactly that—using your OneNote-style notes as its knowledge base. Powered by LangChain, FAISS, and Streamlit, this chatbot can be run both in the terminal and as a web app."
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#motivation",
-    "href": "posts/langchain-chatbot/index.html#motivation",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "Motivation",
-    "text": "Motivation\nAs technical consultants, marketers, or support engineers, we often keep troubleshooting guides, customer notes, and solution summaries in text files or note-taking apps. Searching through these manually is tedious. What if you could just ask, “What should I do if the SSL status in Pardot shows ERROR?” and get a precise, referenced answer from your own notes?"
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#how-it-works",
-    "href": "posts/langchain-chatbot/index.html#how-it-works",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "How It Works",
-    "text": "How It Works\nThe chatbot uses retrieval-augmented generation:\n\nLoad Notes: Your notes are stored in a plain text file (e.g., customer_xy_notes.txt).\nSplit & Embed: The notes are split into chunks and embedded using HuggingFace models.\nSemantic Search: When you ask a question, the system finds the most relevant note snippets using FAISS.\nLLM Answering: A local LLM (via Ollama) generates an answer, referencing the retrieved context.\nConversational Memory: The chatbot remembers previous questions and answers for context."
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#example-troubleshooting-ssl-errors-in-pardot",
-    "href": "posts/langchain-chatbot/index.html#example-troubleshooting-ssl-errors-in-pardot",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "Example: Troubleshooting SSL Errors in Pardot",
-    "text": "Example: Troubleshooting SSL Errors in Pardot\nHere’s a sample note from the knowledge base:\n\nProblem Summary\nA new error appeared in the Domain Management section of Pardot. The SSL Status of a tracker domain was marked as “ERROR”.\n…\nSolution\nA support ticket was opened with Salesforce, referencing this known issue. Salesforce confirmed the problem was not related to the certificate itself, but due to a glitch in their internal validation system. They manually reset the SSL status, and the domain now shows “Enabled” again.\n\nWhen you ask the chatbot, “How do I fix SSL Status ERROR in Pardot?”, it will summarize the above and guide you to check the certificate, then contact Salesforce support if needed."
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#running-the-chatbot",
-    "href": "posts/langchain-chatbot/index.html#running-the-chatbot",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "Running the Chatbot",
-    "text": "Running the Chatbot\n\nTerminal Interface\npython chatbot_terminal.py\n\n\nStreamlit Web App\nstreamlit run streamlit_app.py\nYou’ll get a friendly chat UI in your browser:\n\n\n\nStreamlit Chatbot Screenshot"
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#customizing-for-your-notes",
-    "href": "posts/langchain-chatbot/index.html#customizing-for-your-notes",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "Customizing for Your Notes",
-    "text": "Customizing for Your Notes\n\nReplace customer_xy_notes.txt with your own notes.\nThe chatbot will automatically use your content as its knowledge base."
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#project-structure",
-    "href": "posts/langchain-chatbot/index.html#project-structure",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "Project Structure",
-    "text": "Project Structure\n\nchatbot_core_onenote.py: Core logic (loading, embedding, retrieval, LLM).\nstreamlit_app.py: Web interface.\nchatbot_terminal.py: Terminal interface.\ncustomer_xy_notes.txt: Example notes file."
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#why-langchain-and-streamlit",
-    "href": "posts/langchain-chatbot/index.html#why-langchain-and-streamlit",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "Why LangChain and Streamlit?",
-    "text": "Why LangChain and Streamlit?\n\nLangChain: Makes it easy to combine retrieval and LLMs for question answering.\nFAISS: Fast, scalable semantic search.\nStreamlit: Instantly turns Python scripts into shareable web apps."
-  },
-  {
-    "objectID": "posts/langchain-chatbot/index.html#conclusion",
-    "href": "posts/langchain-chatbot/index.html#conclusion",
-    "title": "Building a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit",
-    "section": "Conclusion",
-    "text": "Conclusion\nThis project demonstrates how easy it is to build a personal knowledge chatbot using modern open-source tools. Whether you’re supporting customers, onboarding new team members, or just want smarter access to your notes, this approach can save you time and effort.\n\nTry it out, and let me know what you build!"
-  },
-  {
     "objectID": "posts/python-class/index.html",
     "href": "posts/python-class/index.html",
     "title": "Python Classes, Properties, and Factory Patterns",
@@ -291,6 +221,6 @@
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Tabular Data and PGMs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJun 12, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nBuilding a Conversational AI Chatbot for OneNote-Style Notes with LangChain and Streamlit\n\n\n\n\n\n\nAI\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJun 9, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython’s Walrus Operator\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 29, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Classes, Properties, and Factory Patterns\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 1, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\nNo matching items"
+    "text": "Python’s Walrus Operator: A Comprehensive Guide\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 29, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Classes, Properties, and Factory Patterns\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nMar 1, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\ncode\n\n\n\n\n\n\n\n\n\nFeb 22, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\n\n\n\n\n\n\nFeb 16, 2025\n\n\nBulent Soykan\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 13, 2025\n\n\nBulent Soykan\n\n\n\n\n\nNo matching items"
   }
 ]

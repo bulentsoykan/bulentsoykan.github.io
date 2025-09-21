@@ -2,8 +2,6 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/Probabilistic-Generative-Models/index.html",
-      "/posts/langchain-chatbot/index.html",
       "/posts/walrus-operator/index.html",
       "/posts/python-class/index.html",
       "/posts/python-exceptions/index.html",
