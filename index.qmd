@@ -1,14 +1,24 @@
 ---
 title: "Bulent Soykan's Blog"
+subtitle: "AI Research, Digital Twins & Optimization Insights"
 listing:
   contents: posts
   sort: "date desc"
-  type: default
+  type: grid
   categories: true
   sort-ui: false
-  filter-ui: false
+  filter-ui: true
+  grid-columns: 3
+  image-height: 200px
+  fields: [image, date, title, author, categories, description]
 page-layout: full
 title-block-banner: true
+---
+
+Welcome to my digital space where I share insights on **AI-driven simulation modeling**, **digital twin technologies**, and **mathematical optimization**. 
+
+Here you'll find practical lessons from research, thoughts on machine learning applications, and explorations of how AI can enhance decision-making in complex systems.
+
 ---
 
 

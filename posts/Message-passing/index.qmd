@@ -3,6 +3,7 @@ title: "Message Passing in GNNs"
 author: "Bulent Soykan"
 date: "2025-02-16"
 categories: [news, code, analysis]
+description: "Exploring Graph Neural Networks through matrix multiplication and message passing mechanisms"
 image: "graph.png"
 ---
 

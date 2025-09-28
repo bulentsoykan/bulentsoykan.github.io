@@ -3,6 +3,8 @@ title: "Welcome To My Blog"
 author: "Bulent Soykan"
 date: "2025-02-13"
 categories: [news]
+description: "Welcome to my digital space for AI research, digital twins, and optimization insights"
+image: thumbnail.jpg
 ---
 
 This is the first post in my blog. Welcome!

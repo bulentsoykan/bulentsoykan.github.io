@@ -3,6 +3,7 @@ title: "Python's Walrus Operator: A Comprehensive Guide"
 author: "Bulent Soykan"
 date: "2025-03-29"
 categories: [code]
+description: "Master Python's walrus operator (:=) with practical examples and best practices"
 image: "walrus.png"
 ---
 

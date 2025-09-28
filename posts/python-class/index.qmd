@@ -3,6 +3,7 @@ title: "Python Classes, Properties, and Factory Patterns"
 author: "Bulent Soykan"
 date: "2025-03-01"
 categories: [code]
+description: "Deep dive into Python classes, properties, and factory design patterns with practical examples"
 image: "classes.png"
 ---
 

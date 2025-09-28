@@ -3,6 +3,7 @@ title: "Python Exceptions and Errors"
 author: "Bulent Soykan"
 date: "2025-02-22"
 categories: [code]
+description: "Understanding Python exception handling, error types, and best practices for robust code"
 image: "exception.png"
 ---
 
