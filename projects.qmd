@@ -1,7 +1,144 @@
 ---
 title: "Projects"
+description: "A showcase of my research projects, open-source contributions, and software tools in AI, machine learning, and optimization"
+---
 
+## Research & Development Projects
+
+This page highlights some of my key research projects, open-source contributions, and software tools in the areas of artificial intelligence, machine learning, optimization, and digital twins.
 
 ---
 
-## Bulent Soykan
+### Digital Twin Framework for Industrial Systems
+
+A comprehensive framework for building digital twins of manufacturing and industrial systems using reinforcement learning and simulation modeling.
+
+**Key Features:**
+- Real-time synchronization between physical and digital systems
+- Predictive maintenance using ML models
+- Optimization algorithms for resource allocation
+- Scalable architecture for multi-agent systems
+
+**Technologies:** Python, PyTorch, SimPy, Ray
+
+**Status:** Active Research
+
+---
+
+### Reinforcement Learning for Dynamic Scheduling
+
+Research project focused on developing RL algorithms for dynamic job scheduling in complex manufacturing environments with stochastic demand.
+
+**Highlights:**
+- Custom gym-compatible environment for scheduling problems
+- Comparison of DQN, PPO, and A3C algorithms
+- Integration with discrete-event simulation
+- Benchmark against traditional heuristics (FIFO, EDD, SPT)
+
+**Technologies:** Python, Stable-Baselines3, NumPy, Pandas
+
+**Publications:** In preparation
+
+---
+
+### Optimization Toolkit for Production Planning
+
+An open-source Python library providing implementations of classical and modern optimization algorithms for production planning and supply chain management.
+
+**Features:**
+- Mixed-integer linear programming (MILP) solvers
+- Metaheuristic algorithms (GA, PSO, SA)
+- Multi-objective optimization
+- Visualization tools for solution analysis
+
+**Technologies:** Python, PuLP, SciPy, Plotly
+
+**GitHub:** Coming Soon
+
+---
+
+### Graph Neural Networks for Supply Chain Networks
+
+Applying GNN architectures to model and optimize supply chain networks, with focus on demand forecasting and inventory optimization.
+
+**Contributions:**
+- Custom message-passing layers for supply chain graphs
+- Attention mechanisms for multi-tier networks
+- Temporal graph modeling for time-series forecasting
+- Benchmarking against traditional forecasting methods
+
+**Technologies:** PyTorch Geometric, NetworkX, scikit-learn
+
+**Status:** Active Research
+
+---
+
+### Machine Learning Course Materials
+
+Open-source teaching materials, Jupyter notebooks, and interactive tutorials for machine learning courses.
+
+**Contents:**
+- Foundational ML algorithms with Python implementations
+- Deep learning with PyTorch tutorials
+- Reinforcement learning from scratch
+- Real-world case studies and datasets
+
+**Technologies:** Python, Jupyter, scikit-learn, PyTorch
+
+**GitHub:** Coming Soon
+
+---
+
+### Simulation Modeling Library
+
+A Python library for discrete-event simulation with built-in support for common modeling patterns in manufacturing, healthcare, and service systems.
+
+**Features:**
+- Object-oriented simulation framework
+- Statistical analysis tools
+- Animation and visualization
+- Integration with optimization algorithms
+
+**Technologies:** Python, SimPy, Matplotlib, Seaborn
+
+**Status:** In Development
+
+---
+
+## Open Source Contributions
+
+I actively contribute to various open-source projects in the Python and machine learning ecosystem:
+
+- **PyTorch**: Bug fixes and documentation improvements
+- **Stable-Baselines3**: Algorithm implementations and examples
+- **SimPy**: Community support and tutorials
+- **scikit-learn**: Documentation and testing
+
+---
+
+## Tools & Utilities
+
+### Python Best Practices Collection
+
+A curated collection of Python code examples, design patterns, and best practices for data science and machine learning projects.
+
+**Includes:**
+- Advanced Python features and idioms
+- Software design patterns for ML projects
+- Testing strategies for data pipelines
+- Performance optimization techniques
+
+**GitHub:** Coming Soon
+
+---
+
+## Collaboration
+
+I'm always interested in collaborating on research projects at the intersection of machine learning, optimization, and simulation. If you have an interesting problem or idea, feel free to [reach out](about.qmd)!
+
+**Areas of Interest:**
+- Reinforcement learning applications in operations research
+- Digital twin development for complex systems
+- Multi-agent systems and coordination
+- Optimization under uncertainty
+- Industrial AI and ML in production environments

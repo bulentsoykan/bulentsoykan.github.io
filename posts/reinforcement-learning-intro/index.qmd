@@ -1,0 +1,549 @@
+---
+title: "Introduction to Reinforcement Learning with Python"
+author: "Bulent Soykan"
+date: "2025-04-12"
+categories: [machine-learning, reinforcement-learning, python, tutorial]
+description: "A comprehensive introduction to reinforcement learning concepts and implementation in Python, from basic principles to building your first RL agent"
+image: "rl-diagram.png"
+---
+
+## Introduction
+
+Reinforcement Learning (RL) represents a fundamental paradigm in machine learning where agents learn to make decisions by interacting with an environment. Unlike supervised learning, where we have labeled examples, or unsupervised learning, where we find patterns in data, RL agents learn through trial and error, receiving rewards or penalties for their actions.
+
+In this comprehensive guide, we'll explore the foundations of reinforcement learning and build practical examples using Python.
+
+## What is Reinforcement Learning?
+
+At its core, reinforcement learning is about learning what to do—how to map situations to actions—to maximize a numerical reward signal. The learner (agent) is not told which actions to take but must discover which actions yield the most reward by trying them.
+
+### Key Components of RL
+
+1. **Agent**: The learner or decision-maker
+2. **Environment**: The world with which the agent interacts
+3. **State (s)**: The current situation of the agent
+4. **Action (a)**: A move the agent can make
+5. **Reward (r)**: Feedback from the environment
+6. **Policy (π)**: The agent's strategy for choosing actions
+7. **Value Function (V)**: Estimate of expected future rewards
+
+## The RL Framework: Markov Decision Process
+
+Most RL problems can be formalized as Markov Decision Processes (MDPs), characterized by:
+
+- **States** $S$: Set of all possible states
+- **Actions** $A$: Set of all possible actions
+- **Transition Function** $P(s'|s,a)$: Probability of reaching state $s'$ from state $s$ by taking action $a$
+- **Reward Function** $R(s,a,s')$: Immediate reward for transitioning from $s$ to $s'$ via action $a$
+- **Discount Factor** $\gamma \in [0,1]$: How much we value future rewards vs. immediate rewards
+
+The goal is to find an optimal policy $\pi^*$ that maximizes the expected cumulative reward:
+
+$$
+G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
+$$
+
+## Building Blocks: Value Functions and Bellman Equations
+
+### State Value Function
+
+The value of a state under policy $\pi$ is the expected return starting from that state:
+
+$$
+V^\pi(s) = \mathbb{E}_\pi[G_t | S_t = s]
+$$
+
+### Action Value Function (Q-Function)
+
+The value of taking action $a$ in state $s$ under policy $\pi$:
+
+$$
+Q^\pi(s,a) = \mathbb{E}_\pi[G_t | S_t = s, A_t = a]
+$$
+
+### Bellman Equation
+
+The fundamental recursive relationship:
+
+$$
+V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a)[R(s,a,s') + \gamma V^\pi(s')]
+$$
+
+## Implementing a Simple RL Environment
+
+Let's start by creating a simple grid world environment:
+
+```python
+import numpy as np
+from typing import Tuple, List
+import matplotlib.pyplot as plt
+
+class GridWorld:
+    """
+    Simple grid world environment for RL.
+
+    The agent starts at (0,0) and must reach the goal at (4,4).
+    """
+
+    def __init__(self, size: int = 5):
+        self.size = size
+        self.state = (0, 0)
+        self.goal = (size - 1, size - 1)
+        self.actions = {
+            0: (-1, 0),  # Up
+            1: (1, 0),   # Down
+            2: (0, -1),  # Left
+            3: (0, 1)    # Right
+        }
+
+    def reset(self) -> Tuple[int, int]:
+        """Reset environment to initial state."""
+        self.state = (0, 0)
+        return self.state
+
+    def step(self, action: int) -> Tuple[Tuple[int, int], float, bool]:
+        """
+        Take action and return next state, reward, and done flag.
+
+        Args:
+            action: Integer representing the action (0-3)
+
+        Returns:
+            Tuple of (next_state, reward, done)
+        """
+        # Calculate next state
+        dx, dy = self.actions[action]
+        next_state = (
+            max(0, min(self.size - 1, self.state[0] + dx)),
+            max(0, min(self.size - 1, self.state[1] + dy))
+        )
+
+        # Calculate reward
+        if next_state == self.goal:
+            reward = 10.0
+            done = True
+        else:
+            reward = -0.1  # Small penalty for each step
+            done = False
+
+        self.state = next_state
+        return next_state, reward, done
+
+    def render(self):
+        """Display the current state."""
+        grid = np.zeros((self.size, self.size))
+        grid[self.state] = 1
+        grid[self.goal] = 2
+        print(grid)
+```
+
+## Q-Learning: A Model-Free RL Algorithm
+
+Q-Learning is one of the most fundamental RL algorithms. It learns the optimal action-value function:
+
+$$
+Q(s,a) \leftarrow Q(s,a) + \alpha [r + \gamma \max_{a'} Q(s',a') - Q(s,a)]
+$$
+
+Let's implement Q-Learning:
+
+```python
+class QLearningAgent:
+    """Q-Learning agent for grid world."""
+
+    def __init__(
+        self,
+        state_space: int,
+        action_space: int,
+        learning_rate: float = 0.1,
+        discount_factor: float = 0.95,
+        epsilon: float = 1.0,
+        epsilon_decay: float = 0.995,
+        epsilon_min: float = 0.01
+    ):
+        """
+        Initialize Q-Learning agent.
+
+        Args:
+            state_space: Number of possible states
+            action_space: Number of possible actions
+            learning_rate: Learning rate (alpha)
+            discount_factor: Discount factor (gamma)
+            epsilon: Initial exploration rate
+            epsilon_decay: Rate of epsilon decay
+            epsilon_min: Minimum epsilon value
+        """
+        self.action_space = action_space
+        self.lr = learning_rate
+        self.gamma = discount_factor
+        self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
+        self.epsilon_min = epsilon_min
+
+        # Initialize Q-table with zeros
+        self.q_table = {}
+
+    def get_q_value(self, state: Tuple[int, int], action: int) -> float:
+        """Get Q-value for state-action pair."""
+        return self.q_table.get((state, action), 0.0)
+
+    def choose_action(self, state: Tuple[int, int]) -> int:
+        """
+        Choose action using epsilon-greedy policy.
+
+        Args:
+            state: Current state
+
+        Returns:
+            Selected action
+        """
+        # Exploration: random action
+        if np.random.random() < self.epsilon:
+            return np.random.randint(0, self.action_space)
+
+        # Exploitation: best action from Q-table
+        q_values = [self.get_q_value(state, a) for a in range(self.action_space)]
+        max_q = max(q_values)
+
+        # Handle ties randomly
+        best_actions = [a for a in range(self.action_space) if q_values[a] == max_q]
+        return np.random.choice(best_actions)
+
+    def update(
+        self,
+        state: Tuple[int, int],
+        action: int,
+        reward: float,
+        next_state: Tuple[int, int],
+        done: bool
+    ):
+        """
+        Update Q-value using Q-learning update rule.
+
+        Args:
+            state: Current state
+            action: Action taken
+            reward: Reward received
+            next_state: Next state
+            done: Whether episode is finished
+        """
+        current_q = self.get_q_value(state, action)
+
+        if done:
+            target_q = reward
+        else:
+            # Q-learning update: use max Q-value of next state
+            next_q_values = [
+                self.get_q_value(next_state, a)
+                for a in range(self.action_space)
+            ]
+            target_q = reward + self.gamma * max(next_q_values)
+
+        # Update Q-table
+        new_q = current_q + self.lr * (target_q - current_q)
+        self.q_table[(state, action)] = new_q
+
+    def decay_epsilon(self):
+        """Decay exploration rate."""
+        self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+```
+
+## Training the Agent
+
+Now let's train our Q-Learning agent:
+
+```python
+def train_agent(
+    env: GridWorld,
+    agent: QLearningAgent,
+    episodes: int = 1000,
+    max_steps: int = 100
+) -> List[float]:
+    """
+    Train the Q-Learning agent.
+
+    Args:
+        env: Environment
+        agent: QLearningAgent
+        episodes: Number of training episodes
+        max_steps: Maximum steps per episode
+
+    Returns:
+        List of episode rewards
+    """
+    episode_rewards = []
+
+    for episode in range(episodes):
+        state = env.reset()
+        total_reward = 0
+        done = False
+        steps = 0
+
+        while not done and steps < max_steps:
+            # Choose and take action
+            action = agent.choose_action(state)
+            next_state, reward, done = env.step(action)
+
+            # Update Q-values
+            agent.update(state, action, reward, next_state, done)
+
+            state = next_state
+            total_reward += reward
+            steps += 1
+
+        # Decay exploration rate
+        agent.decay_epsilon()
+
+        episode_rewards.append(total_reward)
+
+        # Print progress
+        if (episode + 1) % 100 == 0:
+            avg_reward = np.mean(episode_rewards[-100:])
+            print(f"Episode {episode + 1}/{episodes}, "
+                  f"Avg Reward: {avg_reward:.2f}, "
+                  f"Epsilon: {agent.epsilon:.3f}")
+
+    return episode_rewards
+
+# Create environment and agent
+env = GridWorld(size=5)
+agent = QLearningAgent(
+    state_space=25,  # 5x5 grid
+    action_space=4,
+    learning_rate=0.1,
+    discount_factor=0.95
+)
+
+# Train agent
+rewards = train_agent(env, agent, episodes=1000)
+```
+
+## Visualizing Learning Progress
+
+Let's visualize how the agent improves over time:
+
+```python
+import matplotlib.pyplot as plt
+
+def plot_learning_curve(rewards: List[float], window: int = 100):
+    """Plot learning curve with moving average."""
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot raw rewards
+    ax.plot(rewards, alpha=0.3, label='Episode Reward')
+
+    # Plot moving average
+    moving_avg = np.convolve(
+        rewards,
+        np.ones(window) / window,
+        mode='valid'
+    )
+    ax.plot(moving_avg, label=f'{window}-Episode Moving Average')
+
+    ax.set_xlabel('Episode')
+    ax.set_ylabel('Total Reward')
+    ax.set_title('Q-Learning Training Progress')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    plt.show()
+
+plot_learning_curve(rewards)
+```
+
+## Visualizing the Learned Policy
+
+After training, we can visualize the learned policy:
+
+```python
+def visualize_policy(agent: QLearningAgent, size: int = 5):
+    """Visualize the learned policy as arrows on grid."""
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    # Arrow mapping
+    arrows = {0: '↑', 1: '↓', 2: '←', 3: '→'}
+
+    for i in range(size):
+        for j in range(size):
+            state = (i, j)
+
+            # Get best action for this state
+            q_values = [agent.get_q_value(state, a) for a in range(4)]
+            best_action = np.argmax(q_values)
+
+            # Plot arrow
+            ax.text(
+                j, i,
+                arrows[best_action],
+                ha='center',
+                va='center',
+                fontsize=30
+            )
+
+    # Mark goal
+    ax.text(
+        size - 1, size - 1,
+        'G',
+        ha='center',
+        va='center',
+        fontsize=40,
+        color='green',
+        weight='bold'
+    )
+
+    ax.set_xlim(-0.5, size - 0.5)
+    ax.set_ylim(-0.5, size - 0.5)
+    ax.set_xticks(range(size))
+    ax.set_yticks(range(size))
+    ax.grid(True)
+    ax.set_title('Learned Policy')
+    ax.invert_yaxis()
+
+    plt.tight_layout()
+    plt.show()
+
+visualize_policy(agent)
+```
+
+## Advanced RL Concepts
+
+### 1. SARSA: On-Policy Learning
+
+Unlike Q-Learning (off-policy), SARSA updates based on the action actually taken:
+
+$$
+Q(s,a) \leftarrow Q(s,a) + \alpha [r + \gamma Q(s',a') - Q(s,a)]
+$$
+
+```python
+def sarsa_update(
+    self,
+    state: Tuple[int, int],
+    action: int,
+    reward: float,
+    next_state: Tuple[int, int],
+    next_action: int,
+    done: bool
+):
+    """SARSA update rule."""
+    current_q = self.get_q_value(state, action)
+
+    if done:
+        target_q = reward
+    else:
+        # SARSA: use Q-value of next state-action pair
+        next_q = self.get_q_value(next_state, next_action)
+        target_q = reward + self.gamma * next_q
+
+    new_q = current_q + self.lr * (target_q - current_q)
+    self.q_table[(state, action)] = new_q
+```
+
+### 2. Deep Q-Networks (DQN)
+
+For large state spaces, we can use neural networks to approximate Q-values:
+
+```python
+import torch
+import torch.nn as nn
+
+class DQN(nn.Module):
+    """Deep Q-Network for approximating Q-values."""
+
+    def __init__(self, state_dim: int, action_dim: int, hidden_dim: int = 128):
+        super(DQN, self).__init__()
+
+        self.network = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, action_dim)
+        )
+
+    def forward(self, state):
+        return self.network(state)
+```
+
+### 3. Experience Replay
+
+Store and randomly sample past experiences to break correlation:
+
+```python
+from collections import deque
+import random
+
+class ReplayBuffer:
+    """Experience replay buffer for DQN."""
+
+    def __init__(self, capacity: int = 10000):
+        self.buffer = deque(maxlen=capacity)
+
+    def push(self, state, action, reward, next_state, done):
+        """Add experience to buffer."""
+        self.buffer.append((state, action, reward, next_state, done))
+
+    def sample(self, batch_size: int):
+        """Sample random batch of experiences."""
+        return random.sample(self.buffer, batch_size)
+
+    def __len__(self):
+        return len(self.buffer)
+```
+
+## Common RL Algorithms Overview
+
+| Algorithm | Type | Use Case |
+|-----------|------|----------|
+| Q-Learning | Off-policy, Value-based | Discrete action spaces |
+| SARSA | On-policy, Value-based | When safety matters |
+| DQN | Off-policy, Deep RL | Large state spaces |
+| Policy Gradient | On-policy, Policy-based | Continuous actions |
+| PPO | On-policy, Actor-Critic | General purpose, stable |
+| A3C | On-policy, Actor-Critic | Parallel training |
+| SAC | Off-policy, Actor-Critic | Continuous control |
+
+## Best Practices for RL
+
+1. **Start Simple**: Begin with tabular methods before deep RL
+2. **Tune Hyperparameters**: Learning rate, discount factor, and exploration rate are critical
+3. **Monitor Training**: Track episode rewards, Q-values, and loss
+4. **Use Baselines**: Compare against random or heuristic policies
+5. **Normalize Rewards**: Scale rewards to a reasonable range
+6. **Implement Proper Exploration**: Balance exploration vs. exploitation
+7. **Debug Carefully**: RL is notoriously difficult to debug
+
+## Practical Applications
+
+Reinforcement learning has been successfully applied to:
+
+- **Game Playing**: Chess, Go, Atari games
+- **Robotics**: Robot control and manipulation
+- **Resource Management**: Data center cooling, traffic light control
+- **Finance**: Trading strategies, portfolio optimization
+- **Healthcare**: Treatment optimization, drug discovery
+- **Recommendation Systems**: Personalized content delivery
+
+## Conclusion
+
+Reinforcement learning offers a powerful framework for solving sequential decision-making problems. While we've covered the fundamentals with Q-Learning, this is just the beginning. Modern RL includes sophisticated algorithms like PPO, SAC, and TD3 that can handle continuous action spaces and complex environments.
+
+Key takeaways:
+
+- RL agents learn through interaction with environments
+- Q-Learning provides a solid foundation for understanding RL
+- Exploration vs. exploitation is a fundamental tradeoff
+- Deep RL extends these concepts to high-dimensional problems
+- Proper hyperparameter tuning is essential for success
+
+The code examples provided give you a solid foundation to start experimenting with RL. From here, explore libraries like Stable-Baselines3, RLlib, or OpenAI Gym to tackle more complex problems.
+
+## Further Resources
+
+- [Sutton & Barto: Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book.html)
+- [OpenAI Spinning Up in Deep RL](https://spinningup.openai.com/)
+- [Stable-Baselines3 Documentation](https://stable-baselines3.readthedocs.io/)
+- [DeepMind's RL Course](https://www.deepmind.com/learning-resources)
+
+Happy learning!

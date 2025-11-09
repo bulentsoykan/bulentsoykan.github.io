@@ -1,0 +1,822 @@
+---
+title: "Optimization Algorithms in Machine Learning"
+author: "Bulent Soykan"
+date: "2025-04-26"
+categories: [machine-learning, optimization, algorithms, python]
+description: "A comprehensive guide to optimization algorithms in machine learning, from gradient descent to advanced techniques like Adam and second-order methods"
+image: "optimization.png"
+---
+
+## Introduction
+
+Optimization lies at the heart of machine learning. Whether you're training a neural network, tuning hyperparameters, or solving a resource allocation problem, you're engaging in optimization. Understanding these algorithms is crucial for developing efficient and effective ML systems.
+
+In this comprehensive guide, we'll explore optimization algorithms from first principles to state-of-the-art techniques, with practical Python implementations.
+
+## What is Mathematical Optimization?
+
+Optimization is the process of finding the best solution from all feasible solutions. In mathematical terms, we seek to:
+
+$$
+\min_{x \in \mathcal{X}} f(x)
+$$
+
+where:
+- $f(x)$ is the objective function to minimize
+- $x$ is the decision variable
+- $\mathcal{X}$ is the feasible set
+
+In machine learning, $f(x)$ is typically a loss function, and $x$ represents model parameters.
+
+## Categories of Optimization Problems
+
+### 1. Convex vs. Non-Convex
+
+**Convex Problems**: Have a single global minimum, guaranteeing convergence
+
+**Non-Convex Problems**: Multiple local minima, more challenging to optimize (e.g., neural networks)
+
+### 2. Constrained vs. Unconstrained
+
+**Unconstrained**: No restrictions on decision variables
+
+**Constrained**: Must satisfy equality or inequality constraints
+
+### 3. Continuous vs. Discrete
+
+**Continuous**: Variables can take any real value
+
+**Discrete**: Variables limited to specific values (e.g., integers)
+
+## Gradient-Based Optimization
+
+### Gradient Descent: The Foundation
+
+The most fundamental optimization algorithm updates parameters in the direction of steepest descent:
+
+$$
+x_{t+1} = x_t - \alpha \nabla f(x_t)
+$$
+
+where $\alpha$ is the learning rate and $\nabla f(x_t)$ is the gradient.
+
+```python
+import numpy as np
+from typing import Callable, Tuple, List
+import matplotlib.pyplot as plt
+
+class GradientDescent:
+    """Basic gradient descent optimizer."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.01,
+        max_iterations: int = 1000,
+        tolerance: float = 1e-6
+    ):
+        """
+        Initialize gradient descent optimizer.
+
+        Args:
+            learning_rate: Step size for each iteration
+            max_iterations: Maximum number of iterations
+            tolerance: Convergence threshold
+        """
+        self.learning_rate = learning_rate
+        self.max_iterations = max_iterations
+        self.tolerance = tolerance
+        self.history = []
+
+    def optimize(
+        self,
+        f: Callable,
+        grad_f: Callable,
+        x0: np.ndarray
+    ) -> Tuple[np.ndarray, List[float]]:
+        """
+        Optimize function using gradient descent.
+
+        Args:
+            f: Objective function
+            grad_f: Gradient function
+            x0: Initial point
+
+        Returns:
+            Tuple of (optimal_x, loss_history)
+        """
+        x = x0.copy()
+        self.history = []
+
+        for i in range(self.max_iterations):
+            # Compute gradient
+            grad = grad_f(x)
+
+            # Check convergence
+            if np.linalg.norm(grad) < self.tolerance:
+                print(f"Converged at iteration {i}")
+                break
+
+            # Update parameters
+            x = x - self.learning_rate * grad
+
+            # Store loss
+            loss = f(x)
+            self.history.append(loss)
+
+            if i % 100 == 0:
+                print(f"Iteration {i}: Loss = {loss:.6f}")
+
+        return x, self.history
+
+
+# Example: Minimize quadratic function
+def quadratic_function(x: np.ndarray) -> float:
+    """f(x) = x^T A x + b^T x + c"""
+    A = np.array([[2, 0], [0, 1]])
+    b = np.array([1, 1])
+    c = 0
+    return 0.5 * x.T @ A @ x + b.T @ x + c
+
+def quadratic_gradient(x: np.ndarray) -> np.ndarray:
+    """Gradient of quadratic function."""
+    A = np.array([[2, 0], [0, 1]])
+    b = np.array([1, 1])
+    return A @ x + b
+
+# Optimize
+optimizer = GradientDescent(learning_rate=0.1)
+x0 = np.array([5.0, 5.0])
+x_opt, history = optimizer.optimize(quadratic_function, quadratic_gradient, x0)
+
+print(f"Optimal solution: {x_opt}")
+print(f"Optimal value: {quadratic_function(x_opt):.6f}")
+```
+
+### Stochastic Gradient Descent (SGD)
+
+Instead of computing gradients over the entire dataset, SGD uses mini-batches:
+
+```python
+class StochasticGradientDescent:
+    """Stochastic gradient descent with mini-batches."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.01,
+        batch_size: int = 32,
+        epochs: int = 100
+    ):
+        self.learning_rate = learning_rate
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.history = []
+
+    def optimize(
+        self,
+        X: np.ndarray,
+        y: np.ndarray,
+        model: 'MLModel'
+    ):
+        """
+        Train model using SGD.
+
+        Args:
+            X: Training features
+            y: Training labels
+            model: ML model to train
+        """
+        n_samples = X.shape[0]
+        n_batches = n_samples // self.batch_size
+
+        for epoch in range(self.epochs):
+            # Shuffle data
+            indices = np.random.permutation(n_samples)
+            X_shuffled = X[indices]
+            y_shuffled = y[indices]
+
+            epoch_loss = 0
+
+            for i in range(n_batches):
+                # Get mini-batch
+                start_idx = i * self.batch_size
+                end_idx = start_idx + self.batch_size
+
+                X_batch = X_shuffled[start_idx:end_idx]
+                y_batch = y_shuffled[start_idx:end_idx]
+
+                # Compute gradient on mini-batch
+                loss, grad = model.compute_loss_and_gradient(X_batch, y_batch)
+
+                # Update parameters
+                model.parameters -= self.learning_rate * grad
+
+                epoch_loss += loss
+
+            # Average loss for epoch
+            avg_loss = epoch_loss / n_batches
+            self.history.append(avg_loss)
+
+            if (epoch + 1) % 10 == 0:
+                print(f"Epoch {epoch + 1}/{self.epochs}, Loss: {avg_loss:.6f}")
+```
+
+### Momentum: Accelerating Convergence
+
+Momentum helps accelerate SGD by accumulating past gradients:
+
+$$
+v_t = \beta v_{t-1} + \nabla f(x_t)
+$$
+$$
+x_{t+1} = x_t - \alpha v_t
+$$
+
+```python
+class MomentumOptimizer:
+    """Gradient descent with momentum."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.01,
+        momentum: float = 0.9,
+        max_iterations: int = 1000
+    ):
+        self.learning_rate = learning_rate
+        self.momentum = momentum
+        self.max_iterations = max_iterations
+        self.velocity = None
+        self.history = []
+
+    def optimize(
+        self,
+        f: Callable,
+        grad_f: Callable,
+        x0: np.ndarray
+    ) -> Tuple[np.ndarray, List[float]]:
+        """Optimize using momentum."""
+        x = x0.copy()
+        self.velocity = np.zeros_like(x)
+
+        for i in range(self.max_iterations):
+            grad = grad_f(x)
+
+            # Update velocity
+            self.velocity = self.momentum * self.velocity + grad
+
+            # Update parameters
+            x = x - self.learning_rate * self.velocity
+
+            loss = f(x)
+            self.history.append(loss)
+
+            if i % 100 == 0:
+                print(f"Iteration {i}: Loss = {loss:.6f}")
+
+        return x, self.history
+```
+
+### Nesterov Accelerated Gradient (NAG)
+
+NAG improves momentum by looking ahead:
+
+$$
+v_t = \beta v_{t-1} + \nabla f(x_t - \alpha \beta v_{t-1})
+$$
+$$
+x_{t+1} = x_t - \alpha v_t
+$$
+
+```python
+class NesterovOptimizer:
+    """Nesterov accelerated gradient."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.01,
+        momentum: float = 0.9
+    ):
+        self.learning_rate = learning_rate
+        self.momentum = momentum
+        self.velocity = None
+
+    def step(self, grad_f: Callable, x: np.ndarray) -> np.ndarray:
+        """Perform single optimization step."""
+        if self.velocity is None:
+            self.velocity = np.zeros_like(x)
+
+        # Look-ahead position
+        x_lookahead = x - self.momentum * self.velocity
+
+        # Compute gradient at look-ahead position
+        grad = grad_f(x_lookahead)
+
+        # Update velocity and parameters
+        self.velocity = self.momentum * self.velocity + self.learning_rate * grad
+        x = x - self.velocity
+
+        return x
+```
+
+## Adaptive Learning Rate Methods
+
+### AdaGrad: Adaptive Gradient Algorithm
+
+AdaGrad adapts learning rates for each parameter:
+
+$$
+x_{t+1} = x_t - \frac{\alpha}{\sqrt{G_t + \epsilon}} \odot \nabla f(x_t)
+$$
+
+where $G_t$ accumulates squared gradients.
+
+```python
+class AdaGrad:
+    """AdaGrad optimizer with adaptive learning rates."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.01,
+        epsilon: float = 1e-8
+    ):
+        self.learning_rate = learning_rate
+        self.epsilon = epsilon
+        self.accumulated_grad = None
+
+    def step(self, grad: np.ndarray, x: np.ndarray) -> np.ndarray:
+        """Perform optimization step."""
+        if self.accumulated_grad is None:
+            self.accumulated_grad = np.zeros_like(grad)
+
+        # Accumulate squared gradients
+        self.accumulated_grad += grad ** 2
+
+        # Adaptive learning rate update
+        adapted_lr = self.learning_rate / (
+            np.sqrt(self.accumulated_grad) + self.epsilon
+        )
+
+        x = x - adapted_lr * grad
+
+        return x
+```
+
+### RMSProp: Root Mean Square Propagation
+
+RMSProp addresses AdaGrad's diminishing learning rates:
+
+$$
+E[g^2]_t = \beta E[g^2]_{t-1} + (1-\beta) g_t^2
+$$
+$$
+x_{t+1} = x_t - \frac{\alpha}{\sqrt{E[g^2]_t + \epsilon}} g_t
+$$
+
+```python
+class RMSProp:
+    """RMSProp optimizer."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.01,
+        decay_rate: float = 0.9,
+        epsilon: float = 1e-8
+    ):
+        self.learning_rate = learning_rate
+        self.decay_rate = decay_rate
+        self.epsilon = epsilon
+        self.squared_grad_avg = None
+
+    def step(self, grad: np.ndarray, x: np.ndarray) -> np.ndarray:
+        """Perform optimization step."""
+        if self.squared_grad_avg is None:
+            self.squared_grad_avg = np.zeros_like(grad)
+
+        # Update moving average of squared gradients
+        self.squared_grad_avg = (
+            self.decay_rate * self.squared_grad_avg +
+            (1 - self.decay_rate) * grad ** 2
+        )
+
+        # Update parameters
+        x = x - self.learning_rate * grad / (
+            np.sqrt(self.squared_grad_avg) + self.epsilon
+        )
+
+        return x
+```
+
+### Adam: Adaptive Moment Estimation
+
+Adam combines momentum and RMSProp, currently the most popular optimizer:
+
+$$
+m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t
+$$
+$$
+v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2
+$$
+$$
+\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1-\beta_2^t}
+$$
+$$
+x_{t+1} = x_t - \frac{\alpha \hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
+$$
+
+```python
+class Adam:
+    """Adam optimizer - Adaptive Moment Estimation."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.001,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        epsilon: float = 1e-8
+    ):
+        """
+        Initialize Adam optimizer.
+
+        Args:
+            learning_rate: Step size
+            beta1: Exponential decay rate for first moment
+            beta2: Exponential decay rate for second moment
+            epsilon: Small constant for numerical stability
+        """
+        self.learning_rate = learning_rate
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.epsilon = epsilon
+
+        # Initialize moment estimates
+        self.m = None  # First moment (mean)
+        self.v = None  # Second moment (variance)
+        self.t = 0     # Time step
+
+    def step(self, grad: np.ndarray, x: np.ndarray) -> np.ndarray:
+        """
+        Perform single optimization step.
+
+        Args:
+            grad: Gradient
+            x: Current parameters
+
+        Returns:
+            Updated parameters
+        """
+        if self.m is None:
+            self.m = np.zeros_like(grad)
+            self.v = np.zeros_like(grad)
+
+        self.t += 1
+
+        # Update biased first moment estimate
+        self.m = self.beta1 * self.m + (1 - self.beta1) * grad
+
+        # Update biased second moment estimate
+        self.v = self.beta2 * self.v + (1 - self.beta2) * (grad ** 2)
+
+        # Compute bias-corrected moment estimates
+        m_hat = self.m / (1 - self.beta1 ** self.t)
+        v_hat = self.v / (1 - self.beta2 ** self.t)
+
+        # Update parameters
+        x = x - self.learning_rate * m_hat / (np.sqrt(v_hat) + self.epsilon)
+
+        return x
+
+    def reset(self):
+        """Reset optimizer state."""
+        self.m = None
+        self.v = None
+        self.t = 0
+```
+
+### AdamW: Adam with Weight Decay
+
+AdamW decouples weight decay from gradient updates:
+
+```python
+class AdamW:
+    """AdamW optimizer - Adam with decoupled weight decay."""
+
+    def __init__(
+        self,
+        learning_rate: float = 0.001,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        epsilon: float = 1e-8,
+        weight_decay: float = 0.01
+    ):
+        self.learning_rate = learning_rate
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.epsilon = epsilon
+        self.weight_decay = weight_decay
+
+        self.m = None
+        self.v = None
+        self.t = 0
+
+    def step(self, grad: np.ndarray, x: np.ndarray) -> np.ndarray:
+        """Perform optimization step with weight decay."""
+        if self.m is None:
+            self.m = np.zeros_like(grad)
+            self.v = np.zeros_like(grad)
+
+        self.t += 1
+
+        # Update moments (same as Adam)
+        self.m = self.beta1 * self.m + (1 - self.beta1) * grad
+        self.v = self.beta2 * self.v + (1 - self.beta2) * (grad ** 2)
+
+        m_hat = self.m / (1 - self.beta1 ** self.t)
+        v_hat = self.v / (1 - self.beta2 ** self.t)
+
+        # Update with weight decay
+        x = x - self.learning_rate * (
+            m_hat / (np.sqrt(v_hat) + self.epsilon) +
+            self.weight_decay * x
+        )
+
+        return x
+```
+
+## Second-Order Methods
+
+### Newton's Method
+
+Uses second-order information (Hessian):
+
+$$
+x_{t+1} = x_t - H^{-1}(x_t) \nabla f(x_t)
+$$
+
+```python
+class NewtonMethod:
+    """Newton's method using Hessian."""
+
+    def __init__(self, max_iterations: int = 100, tolerance: float = 1e-6):
+        self.max_iterations = max_iterations
+        self.tolerance = tolerance
+
+    def optimize(
+        self,
+        f: Callable,
+        grad_f: Callable,
+        hess_f: Callable,
+        x0: np.ndarray
+    ) -> np.ndarray:
+        """
+        Optimize using Newton's method.
+
+        Args:
+            f: Objective function
+            grad_f: Gradient function
+            hess_f: Hessian function
+            x0: Initial point
+
+        Returns:
+            Optimal point
+        """
+        x = x0.copy()
+
+        for i in range(self.max_iterations):
+            grad = grad_f(x)
+
+            if np.linalg.norm(grad) < self.tolerance:
+                print(f"Converged at iteration {i}")
+                break
+
+            # Compute Hessian and its inverse
+            hess = hess_f(x)
+            hess_inv = np.linalg.inv(hess)
+
+            # Newton update
+            x = x - hess_inv @ grad
+
+            if i % 10 == 0:
+                print(f"Iteration {i}: f(x) = {f(x):.6f}")
+
+        return x
+```
+
+### L-BFGS: Limited-memory BFGS
+
+Quasi-Newton method that approximates the Hessian using gradients:
+
+```python
+from scipy.optimize import minimize
+
+def optimize_lbfgs(f, grad_f, x0):
+    """Optimize using L-BFGS."""
+    result = minimize(
+        fun=f,
+        x0=x0,
+        method='L-BFGS-B',
+        jac=grad_f,
+        options={'maxiter': 1000, 'disp': True}
+    )
+
+    return result.x, result.fun
+```
+
+## Comparing Optimizers
+
+Let's compare different optimizers on the same problem:
+
+```python
+def compare_optimizers():
+    """Compare performance of different optimizers."""
+
+    # Define problem
+    def rosenbrock(x):
+        """Rosenbrock function - classic optimization test."""
+        return 100 * (x[1] - x[0]**2)**2 + (1 - x[0])**2
+
+    def rosenbrock_grad(x):
+        """Gradient of Rosenbrock function."""
+        grad = np.zeros_like(x)
+        grad[0] = -400 * x[0] * (x[1] - x[0]**2) - 2 * (1 - x[0])
+        grad[1] = 200 * (x[1] - x[0]**2)
+        return grad
+
+    x0 = np.array([-1.0, 1.0])
+
+    # Test optimizers
+    optimizers = {
+        'GD': GradientDescent(learning_rate=0.001),
+        'Momentum': MomentumOptimizer(learning_rate=0.001),
+        'Adam': Adam(learning_rate=0.01)
+    }
+
+    results = {}
+
+    for name, optimizer in optimizers.items():
+        print(f"\n{'='*50}")
+        print(f"Testing {name}")
+        print('='*50)
+
+        x_opt, history = optimizer.optimize(rosenbrock, rosenbrock_grad, x0)
+
+        results[name] = {
+            'x_opt': x_opt,
+            'f_opt': rosenbrock(x_opt),
+            'history': history
+        }
+
+    # Plot convergence
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    for name, result in results.items():
+        ax.semilogy(result['history'], label=name, linewidth=2)
+
+    ax.set_xlabel('Iteration')
+    ax.set_ylabel('Loss (log scale)')
+    ax.set_title('Optimizer Comparison on Rosenbrock Function')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+
+    return results
+```
+
+## Learning Rate Scheduling
+
+Adjusting learning rate during training:
+
+```python
+class LearningRateScheduler:
+    """Learning rate scheduling strategies."""
+
+    @staticmethod
+    def step_decay(initial_lr: float, epoch: int, drop_rate: float = 0.5, epochs_drop: int = 10):
+        """Step decay: reduce LR by drop_rate every epochs_drop."""
+        return initial_lr * (drop_rate ** (epoch // epochs_drop))
+
+    @staticmethod
+    def exponential_decay(initial_lr: float, epoch: int, decay_rate: float = 0.95):
+        """Exponential decay."""
+        return initial_lr * (decay_rate ** epoch)
+
+    @staticmethod
+    def cosine_annealing(initial_lr: float, epoch: int, total_epochs: int):
+        """Cosine annealing."""
+        return initial_lr * 0.5 * (1 + np.cos(np.pi * epoch / total_epochs))
+
+    @staticmethod
+    def warmup_cosine(
+        initial_lr: float,
+        epoch: int,
+        warmup_epochs: int,
+        total_epochs: int
+    ):
+        """Warmup followed by cosine annealing."""
+        if epoch < warmup_epochs:
+            # Linear warmup
+            return initial_lr * (epoch + 1) / warmup_epochs
+        else:
+            # Cosine annealing
+            progress = (epoch - warmup_epochs) / (total_epochs - warmup_epochs)
+            return initial_lr * 0.5 * (1 + np.cos(np.pi * progress))
+```
+
+## Practical Tips for Choosing Optimizers
+
+### For Deep Learning
+
+1. **Start with Adam**: Good default choice, robust across tasks
+2. **Try AdamW**: Better generalization with weight decay
+3. **Consider SGD + Momentum**: Often better final performance with proper tuning
+4. **Use Learning Rate Scheduling**: Crucial for best results
+
+### For Classical ML
+
+1. **L-BFGS**: Excellent for small to medium datasets
+2. **Newton's Method**: When Hessian is easy to compute
+3. **Gradient Descent**: Simple problems with convex objectives
+
+### Hyperparameter Guidelines
+
+| Optimizer | Learning Rate | Other Parameters |
+|-----------|---------------|------------------|
+| SGD | 0.01 - 0.1 | momentum: 0.9 |
+| Adam | 0.001 - 0.01 | β₁: 0.9, β₂: 0.999 |
+| AdamW | 0.001 - 0.01 | weight_decay: 0.01 |
+| RMSProp | 0.001 - 0.01 | decay: 0.9 |
+
+## Advanced Topics
+
+### Gradient Clipping
+
+Prevent exploding gradients:
+
+```python
+def clip_gradients(grad: np.ndarray, max_norm: float = 1.0) -> np.ndarray:
+    """Clip gradients by norm."""
+    norm = np.linalg.norm(grad)
+    if norm > max_norm:
+        grad = grad * (max_norm / norm)
+    return grad
+```
+
+### Natural Gradient Descent
+
+Uses the Fisher information matrix:
+
+$$
+x_{t+1} = x_t - \alpha F^{-1}(x_t) \nabla f(x_t)
+$$
+
+### Evolutionary Algorithms
+
+For non-differentiable objectives:
+
+```python
+class GeneticAlgorithm:
+    """Simple genetic algorithm for optimization."""
+
+    def __init__(
+        self,
+        population_size: int = 50,
+        mutation_rate: float = 0.1,
+        crossover_rate: float = 0.7
+    ):
+        self.population_size = population_size
+        self.mutation_rate = mutation_rate
+        self.crossover_rate = crossover_rate
+
+    def optimize(
+        self,
+        f: Callable,
+        bounds: List[Tuple[float, float]],
+        generations: int = 100
+    ):
+        """Optimize using genetic algorithm."""
+        # Implementation details...
+        pass
+```
+
+## Conclusion
+
+Optimization algorithms are the workhorses of machine learning. From simple gradient descent to sophisticated adaptive methods like Adam, each algorithm has its strengths and appropriate use cases.
+
+Key takeaways:
+
+- **Gradient descent** is the foundation of all optimization in ML
+- **Adaptive methods** (Adam, RMSProp) automatically adjust learning rates
+- **Momentum** helps accelerate convergence and escape local minima
+- **Second-order methods** use curvature information for faster convergence
+- **Proper tuning** of hyperparameters is crucial for success
+- **Learning rate scheduling** can significantly improve final performance
+
+Understanding these algorithms allows you to make informed choices for your specific problems and debug training issues effectively.
+
+## Further Resources
+
+- [An Overview of Gradient Descent Optimization Algorithms](https://arxiv.org/abs/1609.04747)
+- [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980)
+- [Convex Optimization by Boyd & Vandenberghe](https://web.stanford.edu/~boyd/cvxbook/)
+- [Sebastian Ruder's Blog on Optimization](https://ruder.io/optimizing-gradient-descent/)
+
+Happy optimizing!

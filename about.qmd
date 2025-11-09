@@ -13,19 +13,49 @@ about:
     - icon: github
       text: Github
       href: https://github.com/bulentsoykan
-
+    - icon: envelope
+      text: Email
+      href: mailto:bulent@ucf.edu
 ---
 
-## Bulent Soykan
+## About Me
 
-I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.
+I'm an academic researcher and educator based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work bridges the gap between theoretical machine learning research and practical applications in industrial and business contexts.
 
-Beyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the "why" rather than just the "how."
+### Research Focus
 
-This blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.
+My research interests center on:
 
-My personal website: [bulentsoykan.com](https://www.bulentsoykan.com/) 
+- **Reinforcement Learning**: Developing adaptive algorithms for sequential decision-making under uncertainty
+- **Digital Twins**: Creating intelligent simulation models that mirror real-world systems for optimization and prediction
+- **Mathematical Optimization**: Applying advanced optimization techniques to complex real-world problems
+- **Machine Learning Systems**: Building scalable ML pipelines for production environments
 
-My professional website: [ist.ucf.edu/faculty/bulent-soykan](https://www.ist.ucf.edu/faculty/bulent-soykan-ph-d/) 
+### Academic Background
 
-My blog: [bulentsoykan.github.io](https://bulentsoykan.github.io/) 
+I currently serve as a faculty member at the University of Central Florida's College of Engineering and Computer Science, where I teach courses on machine learning, optimization, and simulation modeling. My research has been published in leading conferences and journals in artificial intelligence and operations research.
+
+### Professional Philosophy
+
+I believe in:
+
+- **Simplicity over complexity**: The best solutions are often the simplest ones
+- **First principles thinking**: Understanding the "why" before diving into the "how"
+- **Open knowledge sharing**: Making research and insights accessible to everyone
+- **Practical application**: Bridging the gap between theory and real-world impact
+
+### Beyond Research
+
+When I'm not working on research or teaching, I enjoy building open-source software tools, writing technical tutorials, and exploring new developments in AI and machine learning. I'm passionate about making complex topics accessible and helping others develop their skills in data science and machine learning.
+
+### Connect With Me
+
+This blog is where I share insights on AI, optimization, digital twins, and software development. I also write about research methodologies, best practices in machine learning, and my experiences in academia and industry.
+
+- **Personal Website**: [bulentsoykan.com](https://www.bulentsoykan.com/)
+- **Faculty Page**: [ist.ucf.edu/faculty/bulent-soykan](https://www.ist.ucf.edu/faculty/bulent-soykan-ph-d/)
+- **GitHub**: [@bulentsoykan](https://github.com/bulentsoykan)
+- **Twitter/X**: [@bulentsoykan](https://x.com/bulentsoykan)
+- **LinkedIn**: [bulent-soykan](https://www.linkedin.com/in/bulent-soykan/)
+
+Feel free to reach out if you're interested in collaboration, have questions about my research, or just want to discuss ideas in AI and machine learning. 

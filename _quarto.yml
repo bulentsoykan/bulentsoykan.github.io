@@ -3,17 +3,47 @@ project:
 
 website:
   title: "Bulent Soykan"
+  description: "Research and insights on AI, machine learning, optimization, and digital twins"
   favicon: favicon.png
+  site-url: https://bulentsoykan.github.io
+  repo-url: https://github.com/bulentsoykan/bulentsoykan.github.io
+  open-graph: true
+  twitter-card:
+    creator: "@bulentsoykan"
+    site: "@bulentsoykan"
   navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "About"
+        href: about.qmd
+      - text: "Projects"
+        href: projects.qmd
     right:
-      - about.qmd
-      - projects.qmd
+      - icon: rss
+        href: index.xml
+        aria-label: "RSS Feed"
       - icon: github
         href: https://github.com/bulentsoykan
+        aria-label: "GitHub"
       - icon: twitter
         href: https://x.com/bulentsoykan
+        aria-label: "Twitter"
       - icon: linkedin
         href: https://www.linkedin.com/in/bulent-soykan/
+        aria-label: "LinkedIn"
+  page-footer:
+    left: |
+      &copy; 2025 Bulent Soykan. All rights reserved.
+    center: |
+      Built with [Quarto](https://quarto.org/)
+    right:
+      - icon: rss
+        href: index.xml
+        aria-label: "RSS Feed"
+
 format:
   html:
     theme:
@@ -22,10 +52,18 @@ format:
     css: styles.css
     toc: true
     toc-depth: 3
+    toc-location: left
     code-fold: true
     code-tools: true
+    code-copy: true
+    code-link: true
     df-print: paged
     link-external-newwindow: true
+    link-external-icon: true
+    smooth-scroll: true
+    anchor-sections: true
+    citations-hover: true
+    footnotes-hover: true
 
 
 
