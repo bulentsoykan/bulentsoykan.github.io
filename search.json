@@ -133,6 +133,48 @@
     "text": "References\n\nPEP 572 – Assignment Expressions\nPython Documentation: Assignment expressions"
   },
   {
+    "objectID": "posts/Beyond-Single-Prompt/index.html",
+    "href": "posts/Beyond-Single-Prompt/index.html",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "",
+    "text": "Most developers start their Large Language Model (LLM) journey in the same place: a single prompt sent to a single model. You ask a question, and the model answers. It is powerful, but it is linear. You eventually hit a ceiling where prompt engineering yields diminishing returns.\nThe next frontier is not better prompting, but better architecture. We need to move from thinking about LLMs as chatbots to thinking of them as nodes in a network. This is the multi-agent universe."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#the-plateau-of-the-single-agent",
+    "href": "posts/Beyond-Single-Prompt/index.html#the-plateau-of-the-single-agent",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "",
+    "text": "Most developers start their Large Language Model (LLM) journey in the same place: a single prompt sent to a single model. You ask a question, and the model answers. It is powerful, but it is linear. You eventually hit a ceiling where prompt engineering yields diminishing returns.\nThe next frontier is not better prompting, but better architecture. We need to move from thinking about LLMs as chatbots to thinking of them as nodes in a network. This is the multi-agent universe."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#why-multi-agent",
+    "href": "posts/Beyond-Single-Prompt/index.html#why-multi-agent",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "Why Multi-Agent?",
+    "text": "Why Multi-Agent?\nWhen you network LLMs, you create systems that can self-correct, debate, and seek consensus. You are no longer relying on the hallucination rate of a specific model family (like Llama or GPT). Instead, you are leveraging the aggregate intelligence of a diverse crowd.\nI recently built two applications to test this potential. The goal was to bypass the “analysis paralysis” often caused by complex frameworks like LangChain or LangGraph and simply write code that works."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#experiment-1-the-creative-adversaries",
+    "href": "posts/Beyond-Single-Prompt/index.html#experiment-1-the-creative-adversaries",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "Experiment 1: The Creative Adversaries",
+    "text": "Experiment 1: The Creative Adversaries\nThe first application was a “Poetry Duel.” The concept was simple but architectural: two distinct agents with opposing personas debating through verse.\n\nThe Setup\n\nAgent A: Configured with the persona of Legolas (ethereal, nature-focused, ancient).\nAgent B: Configured with the persona of Herman Melville (nautical, dense, brooding).\nThe Loop: Agent A generates a stanza. This output is fed as the input prompt to Agent B, who must retort.\n\n\n\nThe Insight\nUsing different underlying models for each agent matters. If both are GPT-4, they tend to converge on a similar style. By assigning Agent A to a model like Claude 3.5 Sonnet (for nuance) and Agent B to a model like Mistral Large (for directness), the “duel” felt genuine. The friction between their training data created something a single model could not produce alone."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#experiment-2-llm-as-a-judge",
+    "href": "posts/Beyond-Single-Prompt/index.html#experiment-2-llm-as-a-judge",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "Experiment 2: LLM-as-a-Judge",
+    "text": "Experiment 2: LLM-as-a-Judge\nThe second application addressed a more practical problem: trust. How do we know an answer is correct?\nI implemented a consensus architecture, often called “LLM-as-a-Judge.” This system acts like a Supreme Court of inference.\n\nThe Architecture\n\nThe Judge: A high-reasoning model (e.g., GPT-4o) acts as the orchestrator.\nThe Workers: A pool of 3 to 5 smaller, faster models (e.g., Llama 3 8B, Haiku, Gemini Flash).\n\n\n\nThe Workflow\nWhen the user issues a prompt: 1. The Judge packages the prompt and sends it to all workers simultaneously. 2. The workers generate independent responses. 3. The Judge collects these responses. 4. The Judge analyzes the set for a “Majority Opinion” (consensus) and a “Minority Report” (dissent). 5. The final output is a synthesized statement reflecting the weighted accuracy of the group.\nThis approach significantly reduces hallucinations. If four models agree on a fact and one hallucinates, the Judge discards the outlier."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#the-tooling-strategy",
+    "href": "posts/Beyond-Single-Prompt/index.html#the-tooling-strategy",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "The Tooling Strategy",
+    "text": "The Tooling Strategy\nYou will see endless tutorials debating the merits of LangChain versus LangGraph versus AutoGen. My advice: ignore the noise initially.\n\nUse OpenRouter\nThe biggest friction point in multi-agent systems is managing API keys. You do not want to manage separate billing for OpenAI, Anthropic, Google, and Mistral.\nOpenRouter solves this. It provides a standard OpenAI-compatible API for almost every model. You change one string in your code to switch from gpt-4 to claude-3-opus. This flexibility is essential when testing which models work best as “Judges” versus “Workers.”\n\n\nLeverage AI Coding Assistants\nDo not get bogged down in writing the boilerplate for asynchronous API calls. Use an AI coding assistant (like Cursor or GitHub Copilot) to handle the plumbing.\nTell the AI: “Create a Python script that hits OpenRouter. I want one main function that sends a prompt to three different models in parallel and prints their outputs.”\nThis allows you to focus on the behavior of the system rather than the syntax of the HTTP requests.\nMulti-agent systems are not just for researchers. By treating LLMs as modular components, you can build software that is more creative and reliable than any single model. Start small, use unified APIs, and let the agents talk to each other."
+  },
+  {
     "objectID": "posts/python-exceptions/index.html",
     "href": "posts/python-exceptions/index.html",
     "title": "Python Exceptions and Errors",
@@ -221,6 +263,6 @@
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Welcome to my digital space where I share insights on AI-driven simulation modeling, digital twin technologies, and mathematical optimization.\nHere you’ll find practical lessons from research, thoughts on machine learning applications, and explorations of how AI can enhance decision-making in complex systems.\n\n\n\n\n\n\n\n\n\n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nPython’s Walrus Operator: A Comprehensive Guide\n\n\n\ncode\n\n\n\nMaster Python’s walrus operator (:=) with practical examples and best practices\n\n\n\nBulent Soykan\n\n\nMar 29, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Classes, Properties, and Factory Patterns\n\n\n\ncode\n\n\n\nDeep dive into Python classes, properties, and factory design patterns with practical examples\n\n\n\nBulent Soykan\n\n\nMar 1, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\ncode\n\n\n\nUnderstanding Python exception handling, error types, and best practices for robust code\n\n\n\nBulent Soykan\n\n\nFeb 22, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\nExploring Graph Neural Networks through matrix multiplication and message passing mechanisms\n\n\n\nBulent Soykan\n\n\nFeb 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\nWelcome to my digital space for AI research, digital twins, and optimization insights\n\n\n\nBulent Soykan\n\n\nFeb 13, 2025\n\n\n\n\n\n\nNo matching items"
+    "text": "Welcome to my digital space where I share insights on AI-driven simulation modeling, digital twin technologies, and mathematical optimization.\nHere you’ll find practical lessons from research, thoughts on machine learning applications, and explorations of how AI can enhance decision-making in complex systems.\n\n\n\n\n\n\n\n\n\n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nBeyond the Single Prompt: Building Multi-Agent Networks with OpenRouter\n\n\n\nLLMs\n\nMulti-Agent Systems\n\nPython\n\nAI Engineering\n\n\n\nMove past single-model interactions by building networked multi-agent architectures, from creative duels to consensus-based judging systems.\n\n\n\nBulent Soykan\n\n\nJan 11, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython’s Walrus Operator: A Comprehensive Guide\n\n\n\ncode\n\n\n\nMaster Python’s walrus operator (:=) with practical examples and best practices\n\n\n\nBulent Soykan\n\n\nMar 29, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Classes, Properties, and Factory Patterns\n\n\n\ncode\n\n\n\nDeep dive into Python classes, properties, and factory design patterns with practical examples\n\n\n\nBulent Soykan\n\n\nMar 1, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\ncode\n\n\n\nUnderstanding Python exception handling, error types, and best practices for robust code\n\n\n\nBulent Soykan\n\n\nFeb 22, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\nExploring Graph Neural Networks through matrix multiplication and message passing mechanisms\n\n\n\nBulent Soykan\n\n\nFeb 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\nWelcome to my digital space for AI research, digital twins, and optimization insights\n\n\n\nBulent Soykan\n\n\nFeb 13, 2025\n\n\n\n\n\n\nNo matching items"
   }
 ]
