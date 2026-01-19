@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Orchestrating-Persistent-Agents/index.html",
       "/posts/Beyond-Single-Prompt/index.html",
       "/posts/walrus-operator/index.html",
       "/posts/python-class/index.html",

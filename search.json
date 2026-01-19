@@ -14,60 +14,144 @@
     "text": "I’m an academic researcher based in Florida, specializing in AI-driven simulation modeling, digital twin technologies, and mathematical optimization. My work focuses on leveraging machine learning to enhance decision-making, with a recent emphasis on reinforcement learning.\nBeyond research, I enjoy building software that helps people make better decisions. I believe in simplicity—both in problem-solving and communication. My approach is always to understand and explain the “why” rather than just the “how.”\nThis blog is a place where I share insights on AI, optimization, and digital twins, as well as thoughts on software, research methodologies, and decision-making. If you’re interested in these topics, I hope you’ll find something valuable here.\nMy personal website: bulentsoykan.com\nMy professional website: ist.ucf.edu/faculty/bulent-soykan\nMy blog: bulentsoykan.github.io"
   },
   {
-    "objectID": "posts/Message-passing/index.html",
-    "href": "posts/Message-passing/index.html",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/Orchestrating-Persistent-Agents/index.html",
+    "href": "posts/Orchestrating-Persistent-Agents/index.html",
+    "title": "The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH",
     "section": "",
-    "text": "Graph Neural Networks (GNNs) use message passing to aggregate information from neighboring nodes. This process can be understood as simple matrix multiplication using the adjacency matrix and node feature matrix.\n\n\n\nEach node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]\n\n\n\n\n\n\nThe adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2.\n\n\n\n\n\nMessage passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]\n\n\n\n\n\nRaw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]\n\n\n\n\n\nMessage passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion.\n\n\n\n\nimport numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
+    "text": "Most people interact with LLMs through a browser tab. They type, they wait, they read. When they close the tab, the context vanishes. This is the “user” mindset.\nTo truly leverage multi-agent architectures, you need to shift to the “operator” mindset. You aren’t just chatting; you are managing a facility. Recently, I transitioned my workflow to run about 20 distinct Claude agents continuously. They don’t live in Chrome; they live in a headless Linux server, organized in tmux windows, accessible from anywhere."
   },
   {
-    "objectID": "posts/Message-passing/index.html#node-features-as-a-matrix",
-    "href": "posts/Message-passing/index.html#node-features-as-a-matrix",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/Orchestrating-Persistent-Agents/index.html#from-chatbot-to-workforce",
+    "href": "posts/Orchestrating-Persistent-Agents/index.html#from-chatbot-to-workforce",
+    "title": "The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH",
     "section": "",
-    "text": "Each node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]"
+    "text": "Most people interact with LLMs through a browser tab. They type, they wait, they read. When they close the tab, the context vanishes. This is the “user” mindset.\nTo truly leverage multi-agent architectures, you need to shift to the “operator” mindset. You aren’t just chatting; you are managing a facility. Recently, I transitioned my workflow to run about 20 distinct Claude agents continuously. They don’t live in Chrome; they live in a headless Linux server, organized in tmux windows, accessible from anywhere."
   },
   {
-    "objectID": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
-    "href": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
-    "title": "Message Passing in GNNs",
-    "section": "",
-    "text": "The adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2."
+    "objectID": "posts/Orchestrating-Persistent-Agents/index.html#the-architecture-of-the-hive",
+    "href": "posts/Orchestrating-Persistent-Agents/index.html#the-architecture-of-the-hive",
+    "title": "The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH",
+    "section": "The Architecture of the Hive",
+    "text": "The Architecture of the Hive\nBefore discussing the how, let’s look at what these agents are doing. As I explored in previous experiments, I rely on network architectures rather than single prompts.\n\n1. The Creative Loop (Windows 1-2)\nI have two agents, “Legolas” and “Melville,” engaged in an infinite poetry duel. They run on a loop: * Agent A (Legolas): Generates verse based on ethereal, woodland prompts. * Agent B (Melville): critiques and retorts with nautical, brooding prose. * The Infrastructure: They run in a detached tmux session. I don’t need to trigger them; I just check the logs to see what they’ve created.\n\n\n2. The Supreme Court (Windows 3-8)\nThis is my “LLM-as-a-Judge” implementation. * The Judge: A high-reasoning model (like Claude 3.5 Sonnet or GPT-4o) acting as the orchestrator. * The Workers: Five smaller models (Llama 3, Haiku, etc.). * The Job: I dump complex queries into a queue. The workers vote, the judge synthesizes a majority opinion, and the result is written to a file. This runs asynchronously, 24/7."
   },
   {
-    "objectID": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
-    "href": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
-    "title": "Message Passing in GNNs",
-    "section": "",
-    "text": "Message passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]"
+    "objectID": "posts/Orchestrating-Persistent-Agents/index.html#the-operational-workflow-ssh-and-tmux",
+    "href": "posts/Orchestrating-Persistent-Agents/index.html#the-operational-workflow-ssh-and-tmux",
+    "title": "The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH",
+    "section": "The Operational Workflow: SSH and Tmux",
+    "text": "The Operational Workflow: SSH and Tmux\nWhy use the terminal? Why tmux?\nWhen you are coordinating 20 agents, you cannot rely on a browser that crashes or a laptop that goes to sleep. You need persistence.\n\nThe “Always-On” Advantage\ntmux (terminal multiplexer) allows sessions to run on a server even when you disconnect. My agents are running Python scripts in infinite loops or listening for file system changes. 1. Start the work: I SSH into my server from my desktop. 2. Detach: I disconnect the session. The agents keep running. 3. Check-in: Later, while at a coffee shop, I SSH in from my phone using Termius or Blink. I re-attach to the session, check the output of the “Judge,” or see the latest poem from “Legolas,” and then disconnect.\nThe work never stops just because I closed my laptop."
   },
   {
-    "objectID": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
-    "href": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
-    "title": "Message Passing in GNNs",
-    "section": "",
-    "text": "Raw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]"
+    "objectID": "posts/Orchestrating-Persistent-Agents/index.html#the-tech-stack-for-agility",
+    "href": "posts/Orchestrating-Persistent-Agents/index.html#the-tech-stack-for-agility",
+    "title": "The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH",
+    "section": "The Tech Stack for Agility",
+    "text": "The Tech Stack for Agility\nYou do not need to be a DevOps engineer to set this up. You need two things:\n\n1. OpenRouter\nRunning 20 agents on separate API keys (OpenAI, Anthropic, Google) is a billing nightmare. I use OpenRouter. It offers a unified API. Whether my “Judge” is using Claude and my “Workers” are using Mistral, it is all one endpoint and one monthly bill. It simplifies the code significantly.\n\n\n2. AI Coding Assistants\nDon’t get bogged down in the theory of agent frameworks. You will see endless videos about LangChain or LangGraph. * Ignore the noise. * Use the AI. I simply ask my AI coding assistant: “Write a Python script that monitors a text file for new questions. When a question is added, send it to OpenRouter using the Claude 3.5 Sonnet model and append the answer to a log file.”\nThe AI writes the plumbing. I deploy it to a tmux window. Repeat."
   },
   {
-    "objectID": "posts/Message-passing/index.html#summary",
-    "href": "posts/Message-passing/index.html#summary",
-    "title": "Message Passing in GNNs",
-    "section": "",
-    "text": "Message passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion."
+    "objectID": "posts/Orchestrating-Persistent-Agents/index.html#conclusion",
+    "href": "posts/Orchestrating-Persistent-Agents/index.html#conclusion",
+    "title": "The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH",
+    "section": "Conclusion",
+    "text": "Conclusion\nWe are moving past the era of the “chat.” We are entering the era of the “system.” By combining the reliability of old-school Linux tools with the intelligence of modern LLMs, you can build a personal operations center that works for you, even when you are asleep."
   },
   {
-    "objectID": "posts/Message-passing/index.html#python-implementation",
-    "href": "posts/Message-passing/index.html#python-implementation",
-    "title": "Message Passing in GNNs",
+    "objectID": "posts/python-exceptions/index.html",
+    "href": "posts/python-exceptions/index.html",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "import numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime.\n\n\n\nIf an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")\n\n\n\n\nA finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs\n\n\n\nWhen working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")\n\n\n\nExceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")\n\n\n\nThe following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")\n\n\n\n\nExceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "posts/python-exceptions/index.html#understanding-exceptions",
+    "href": "posts/python-exceptions/index.html#understanding-exceptions",
+    "title": "Python Exceptions and Errors",
     "section": "",
-    "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
+    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime."
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
+    "href": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "If an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
+    "href": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "A finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
+    "href": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "When working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#exceptions-as-objects",
+    "href": "posts/python-exceptions/index.html#exceptions-as-objects",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "Exceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
+    "href": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "The following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")"
+  },
+  {
+    "objectID": "posts/python-exceptions/index.html#conclusion",
+    "href": "posts/python-exceptions/index.html#conclusion",
+    "title": "Python Exceptions and Errors",
+    "section": "",
+    "text": "Exceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html",
+    "href": "posts/Beyond-Single-Prompt/index.html",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "",
+    "text": "Most developers start their Large Language Model (LLM) journey in the same place: a single prompt sent to a single model. You ask a question, and the model answers. It is powerful, but it is linear. You eventually hit a ceiling where prompt engineering yields diminishing returns.\nThe next frontier is not better prompting, but better architecture. We need to move from thinking about LLMs as chatbots to thinking of them as nodes in a network. This is the multi-agent universe."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#the-plateau-of-the-single-agent",
+    "href": "posts/Beyond-Single-Prompt/index.html#the-plateau-of-the-single-agent",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "",
+    "text": "Most developers start their Large Language Model (LLM) journey in the same place: a single prompt sent to a single model. You ask a question, and the model answers. It is powerful, but it is linear. You eventually hit a ceiling where prompt engineering yields diminishing returns.\nThe next frontier is not better prompting, but better architecture. We need to move from thinking about LLMs as chatbots to thinking of them as nodes in a network. This is the multi-agent universe."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#why-multi-agent",
+    "href": "posts/Beyond-Single-Prompt/index.html#why-multi-agent",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "Why Multi-Agent?",
+    "text": "Why Multi-Agent?\nWhen you network LLMs, you create systems that can self-correct, debate, and seek consensus. You are no longer relying on the hallucination rate of a specific model family (like Llama or GPT). Instead, you are leveraging the aggregate intelligence of a diverse crowd.\nI recently built two applications to test this potential. The goal was to bypass the “analysis paralysis” often caused by complex frameworks like LangChain or LangGraph and simply write code that works."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#experiment-1-the-creative-adversaries",
+    "href": "posts/Beyond-Single-Prompt/index.html#experiment-1-the-creative-adversaries",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "Experiment 1: The Creative Adversaries",
+    "text": "Experiment 1: The Creative Adversaries\nThe first application was a “Poetry Duel.” The concept was simple but architectural: two distinct agents with opposing personas debating through verse.\n\nThe Setup\n\nAgent A: Configured with the persona of Legolas (ethereal, nature-focused, ancient).\nAgent B: Configured with the persona of Herman Melville (nautical, dense, brooding).\nThe Loop: Agent A generates a stanza. This output is fed as the input prompt to Agent B, who must retort.\n\n\n\nThe Insight\nUsing different underlying models for each agent matters. If both are GPT-4, they tend to converge on a similar style. By assigning Agent A to a model like Claude 3.5 Sonnet (for nuance) and Agent B to a model like Mistral Large (for directness), the “duel” felt genuine. The friction between their training data created something a single model could not produce alone."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#experiment-2-llm-as-a-judge",
+    "href": "posts/Beyond-Single-Prompt/index.html#experiment-2-llm-as-a-judge",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "Experiment 2: LLM-as-a-Judge",
+    "text": "Experiment 2: LLM-as-a-Judge\nThe second application addressed a more practical problem: trust. How do we know an answer is correct?\nI implemented a consensus architecture, often called “LLM-as-a-Judge.” This system acts like a Supreme Court of inference.\n\nThe Architecture\n\nThe Judge: A high-reasoning model acts as the orchestrator.\nThe Workers: A pool of 3 to 5 smaller, faster models (e.g., Llama 3 8B, Haiku, Gemini Flash).\n\n\n\nThe Workflow\nWhen the user issues a prompt: 1. The Judge packages the prompt and sends it to all workers simultaneously. 2. The workers generate independent responses. 3. The Judge collects these responses. 4. The Judge analyzes the set for a “Majority Opinion” (consensus) and a “Minority Report” (dissent). 5. The final output is a synthesized statement reflecting the weighted accuracy of the group.\nThis approach significantly reduces hallucinations. If four models agree on a fact and one hallucinates, the Judge discards the outlier."
+  },
+  {
+    "objectID": "posts/Beyond-Single-Prompt/index.html#the-tooling-strategy",
+    "href": "posts/Beyond-Single-Prompt/index.html#the-tooling-strategy",
+    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "section": "The Tooling Strategy",
+    "text": "The Tooling Strategy\nYou will see endless tutorials debating the merits of LangChain versus LangGraph versus AutoGen. My advice: ignore the noise initially.\n\nUse OpenRouter\nThe biggest friction point in multi-agent systems is managing API keys. You do not want to manage separate billing for OpenAI, Anthropic, Google, and Mistral.\nOpenRouter solves this. It provides a standard OpenAI-compatible API for almost every model. You change one string in your code to switch from gpt to claude. This flexibility is essential when testing which models work best as “Judges” versus “Workers.”\n\n\nLeverage AI Coding Assistants\nDo not get bogged down in writing the boilerplate for asynchronous API calls. Use an AI coding assistant (like Cursor or GitHub Copilot) to handle the plumbing.\nTell the AI: “Create a Python script that hits OpenRouter. I want one main function that sends a prompt to three different models in parallel and prints their outputs.”\nThis allows you to focus on the behavior of the system rather than the syntax of the HTTP requests.\nMulti-agent systems are not just for researchers. By treating LLMs as modular components, you can build software that is more creative and reliable than any single model. Start small, use unified APIs, and let the agents talk to each other."
   },
   {
     "objectID": "posts/walrus-operator/index.html",
@@ -133,102 +217,60 @@
     "text": "References\n\nPEP 572 – Assignment Expressions\nPython Documentation: Assignment expressions"
   },
   {
-    "objectID": "posts/Beyond-Single-Prompt/index.html",
-    "href": "posts/Beyond-Single-Prompt/index.html",
-    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
     "section": "",
-    "text": "Most developers start their Large Language Model (LLM) journey in the same place: a single prompt sent to a single model. You ask a question, and the model answers. It is powerful, but it is linear. You eventually hit a ceiling where prompt engineering yields diminishing returns.\nThe next frontier is not better prompting, but better architecture. We need to move from thinking about LLMs as chatbots to thinking of them as nodes in a network. This is the multi-agent universe."
+    "text": "This is the first post in my blog. Welcome!\n\nThis is the first post on my blog—welcome!\nI’ve started this space to share thoughts on AI-driven simulation modeling, digital twins, and optimization. My research focuses on machine learning and decision-making, and I enjoy building software that makes complex problems more manageable.\nHere, you’ll find insights on AI, reinforcement learning, and how mathematical models can help us understand the world. I’ll also share practical lessons from my work, including coding, research methodologies, and simplifying complex ideas.\nIf these topics interest you, stick around. I look forward to exploring them with you."
   },
   {
-    "objectID": "posts/Beyond-Single-Prompt/index.html#the-plateau-of-the-single-agent",
-    "href": "posts/Beyond-Single-Prompt/index.html#the-plateau-of-the-single-agent",
-    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
+    "objectID": "posts/Message-passing/index.html",
+    "href": "posts/Message-passing/index.html",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "Most developers start their Large Language Model (LLM) journey in the same place: a single prompt sent to a single model. You ask a question, and the model answers. It is powerful, but it is linear. You eventually hit a ceiling where prompt engineering yields diminishing returns.\nThe next frontier is not better prompting, but better architecture. We need to move from thinking about LLMs as chatbots to thinking of them as nodes in a network. This is the multi-agent universe."
+    "text": "Graph Neural Networks (GNNs) use message passing to aggregate information from neighboring nodes. This process can be understood as simple matrix multiplication using the adjacency matrix and node feature matrix.\n\n\n\nEach node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]\n\n\n\n\n\n\nThe adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2.\n\n\n\n\n\nMessage passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]\n\n\n\n\n\nRaw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]\n\n\n\n\n\nMessage passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion.\n\n\n\n\nimport numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
   },
   {
-    "objectID": "posts/Beyond-Single-Prompt/index.html#why-multi-agent",
-    "href": "posts/Beyond-Single-Prompt/index.html#why-multi-agent",
-    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
-    "section": "Why Multi-Agent?",
-    "text": "Why Multi-Agent?\nWhen you network LLMs, you create systems that can self-correct, debate, and seek consensus. You are no longer relying on the hallucination rate of a specific model family (like Llama or GPT). Instead, you are leveraging the aggregate intelligence of a diverse crowd.\nI recently built two applications to test this potential. The goal was to bypass the “analysis paralysis” often caused by complex frameworks like LangChain or LangGraph and simply write code that works."
-  },
-  {
-    "objectID": "posts/Beyond-Single-Prompt/index.html#experiment-1-the-creative-adversaries",
-    "href": "posts/Beyond-Single-Prompt/index.html#experiment-1-the-creative-adversaries",
-    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
-    "section": "Experiment 1: The Creative Adversaries",
-    "text": "Experiment 1: The Creative Adversaries\nThe first application was a “Poetry Duel.” The concept was simple but architectural: two distinct agents with opposing personas debating through verse.\n\nThe Setup\n\nAgent A: Configured with the persona of Legolas (ethereal, nature-focused, ancient).\nAgent B: Configured with the persona of Herman Melville (nautical, dense, brooding).\nThe Loop: Agent A generates a stanza. This output is fed as the input prompt to Agent B, who must retort.\n\n\n\nThe Insight\nUsing different underlying models for each agent matters. If both are GPT-4, they tend to converge on a similar style. By assigning Agent A to a model like Claude 3.5 Sonnet (for nuance) and Agent B to a model like Mistral Large (for directness), the “duel” felt genuine. The friction between their training data created something a single model could not produce alone."
-  },
-  {
-    "objectID": "posts/Beyond-Single-Prompt/index.html#experiment-2-llm-as-a-judge",
-    "href": "posts/Beyond-Single-Prompt/index.html#experiment-2-llm-as-a-judge",
-    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
-    "section": "Experiment 2: LLM-as-a-Judge",
-    "text": "Experiment 2: LLM-as-a-Judge\nThe second application addressed a more practical problem: trust. How do we know an answer is correct?\nI implemented a consensus architecture, often called “LLM-as-a-Judge.” This system acts like a Supreme Court of inference.\n\nThe Architecture\n\nThe Judge: A high-reasoning model (e.g., GPT-4o) acts as the orchestrator.\nThe Workers: A pool of 3 to 5 smaller, faster models (e.g., Llama 3 8B, Haiku, Gemini Flash).\n\n\n\nThe Workflow\nWhen the user issues a prompt: 1. The Judge packages the prompt and sends it to all workers simultaneously. 2. The workers generate independent responses. 3. The Judge collects these responses. 4. The Judge analyzes the set for a “Majority Opinion” (consensus) and a “Minority Report” (dissent). 5. The final output is a synthesized statement reflecting the weighted accuracy of the group.\nThis approach significantly reduces hallucinations. If four models agree on a fact and one hallucinates, the Judge discards the outlier."
-  },
-  {
-    "objectID": "posts/Beyond-Single-Prompt/index.html#the-tooling-strategy",
-    "href": "posts/Beyond-Single-Prompt/index.html#the-tooling-strategy",
-    "title": "Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter",
-    "section": "The Tooling Strategy",
-    "text": "The Tooling Strategy\nYou will see endless tutorials debating the merits of LangChain versus LangGraph versus AutoGen. My advice: ignore the noise initially.\n\nUse OpenRouter\nThe biggest friction point in multi-agent systems is managing API keys. You do not want to manage separate billing for OpenAI, Anthropic, Google, and Mistral.\nOpenRouter solves this. It provides a standard OpenAI-compatible API for almost every model. You change one string in your code to switch from gpt-4 to claude-3-opus. This flexibility is essential when testing which models work best as “Judges” versus “Workers.”\n\n\nLeverage AI Coding Assistants\nDo not get bogged down in writing the boilerplate for asynchronous API calls. Use an AI coding assistant (like Cursor or GitHub Copilot) to handle the plumbing.\nTell the AI: “Create a Python script that hits OpenRouter. I want one main function that sends a prompt to three different models in parallel and prints their outputs.”\nThis allows you to focus on the behavior of the system rather than the syntax of the HTTP requests.\nMulti-agent systems are not just for researchers. By treating LLMs as modular components, you can build software that is more creative and reliable than any single model. Start small, use unified APIs, and let the agents talk to each other."
-  },
-  {
-    "objectID": "posts/python-exceptions/index.html",
-    "href": "posts/python-exceptions/index.html",
-    "title": "Python Exceptions and Errors",
+    "objectID": "posts/Message-passing/index.html#node-features-as-a-matrix",
+    "href": "posts/Message-passing/index.html#node-features-as-a-matrix",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime.\n\n\n\nIf an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")\n\n\n\n\nA finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs\n\n\n\nWhen working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")\n\n\n\nExceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")\n\n\n\nThe following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")\n\n\n\n\nExceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
+    "text": "Each node in a graph has a feature vector. If we have ( N ) nodes and each node has ( F ) features, we represent node features as a matrix ( X ):\n[ X =\n\\[\\begin{bmatrix} x_1^T \\\\ x_2^T \\\\ x_3^T \\\\ \\vdots \\\\ x_N^T \\end{bmatrix}\\]\n]\nwhere ( x_i ) is the feature vector of node ( i ), and ( X ) has shape ( (N F) ).\n\n\nX = [\n    [1, 2],\n    [3, 4],\n    [5, 6]\n]\n\nNode 1 has features [1,2]\nNode 2 has features [3,4]\nNode 3 has features [5,6]"
   },
   {
-    "objectID": "posts/python-exceptions/index.html#understanding-exceptions",
-    "href": "posts/python-exceptions/index.html#understanding-exceptions",
-    "title": "Python Exceptions and Errors",
+    "objectID": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
+    "href": "posts/Message-passing/index.html#adjacency-matrix-as-a-propagation-rule",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "An exception is a way to interrupt the normal flow of code. When an exception occurs, the Python program will stop executing unless the exception is properly handled.\nExceptions are not always errors; they can also serve as a flow-control tool, allowing you to deal with predictable variations at runtime."
+    "text": "The adjacency matrix ( A ) determines which nodes pass messages to each other.\n[ A =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\\]\n]\n\nNode 1 connects to Nodes 2 and 3.\nNode 2 connects to Nodes 1 and 3.\nNode 3 connects to Nodes 1 and 2."
   },
   {
-    "objectID": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
-    "href": "posts/python-exceptions/index.html#handling-exceptions-with-tryexcept",
-    "title": "Python Exceptions and Errors",
+    "objectID": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
+    "href": "posts/Message-passing/index.html#message-passing-as-matrix-multiplication",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "If an exception is not handled, your program will crash. To prevent this, use try/except blocks:\ntry:\n    result = 10 / 0  # This will cause a ZeroDivisionError\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero!\")\n\n\nA good habit is to keep the try block as small as possible. This ensures that your except block does not accidentally catch errors it should not handle.\ntry:\n    value = int(user_input)  # Only this line is inside try\nexcept ValueError:\n    print(\"Invalid input! Please enter a number.\")"
+    "text": "Message passing means each node aggregates features from its neighbors. Mathematically, this is:\n[ AX ]\nwhich distributes each node’s feature vector to its neighbors.\n\n\nMultiply ( A ) (shape: ( N N )) by ( X ) (shape: ( N F )):\n[ AX =\n\\[\\begin{bmatrix} 0 & 1 & 1 \\\\ 1 & 0 & 1 \\\\ 1 & 1 & 0 \\end{bmatrix}\n\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\\\ 5 & 6 \\end{bmatrix}\\]\n]\nComputing row-wise:\n\nNode 1’s new feature:\n[ (0 ) + (1 ) + (1 ) = [8,10] ]\nNode 2’s new feature:\n[ (1 ) + (0 ) + (1 ) = [6,8] ]\nNode 3’s new feature:\n[ (1 ) + (1 ) + (0 ) = [4,6] ]\n\nSo, the new feature matrix is:\n[ AX =\n\\[\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n]"
   },
   {
-    "objectID": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
-    "href": "posts/python-exceptions/index.html#the-finally-block-ensuring-code-execution",
-    "title": "Python Exceptions and Errors",
+    "objectID": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
+    "href": "posts/Message-passing/index.html#normalization-avoiding-scale-explosion",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "A finally block is useful for cleanup code that must run no matter what:\ntry:\n    file = open(\"data.txt\", \"r\")\n    data = file.read()\nfinally:\n    file.close()  # Ensures file is closed even if an error occurs"
+    "text": "Raw adjacency multiplication can lead to large feature values, so we normalize it using degree normalization:\n[ D^{-1} A X ]\nwhere ( D ) is the degree matrix (diagonal matrix with node degrees):\n[ D =\n\\[\\begin{bmatrix} 2 & 0 & 0 \\\\ 0 & 2 & 0 \\\\ 0 & 0 & 2 \\end{bmatrix}\\]\n]\nSo,\n[ D^{-1} =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\\]\n]\nMultiplying:\n[ D^{-1}AX =\n\\[\\begin{bmatrix} \\frac{1}{2} & 0 & 0 \\\\ 0 & \\frac{1}{2} & 0 \\\\ 0 & 0 & \\frac{1}{2} \\end{bmatrix}\n\\begin{bmatrix} 8 & 10 \\\\ 6 & 8 \\\\ 4 & 6 \\end{bmatrix}\\]\n=\n\\[\\begin{bmatrix} 4 & 5 \\\\ 3 & 4 \\\\ 2 & 3 \\end{bmatrix}\\]\n]"
   },
   {
-    "objectID": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
-    "href": "posts/python-exceptions/index.html#avoiding-keyerror-in-dictionaries",
-    "title": "Python Exceptions and Errors",
+    "objectID": "posts/Message-passing/index.html#summary",
+    "href": "posts/Message-passing/index.html#summary",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "When working with dictionaries, use the if key in dict pattern to avoid KeyError instead of relying on try/except:\ndata = {\"name\": \"Alice\"}\n\nif \"age\" in data:\n    print(data[\"age\"])\nelse:\n    print(\"Key not found\")"
+    "text": "Message passing spreads node features across the graph.\nIt is done using adjacency matrix multiplication: ( AX ).\nNormalization (( D^{-1} A X )) prevents feature explosion."
   },
   {
-    "objectID": "posts/python-exceptions/index.html#exceptions-as-objects",
-    "href": "posts/python-exceptions/index.html#exceptions-as-objects",
-    "title": "Python Exceptions and Errors",
+    "objectID": "posts/Message-passing/index.html#python-implementation",
+    "href": "posts/Message-passing/index.html#python-implementation",
+    "title": "Message Passing in GNNs",
     "section": "",
-    "text": "Exceptions in Python are instances of exception classes. Common built-in exceptions include:\n\nKeyError\nIndexError\nTypeError\nValueError\n\nThese all inherit from the base Exception class:\ntry:\n    my_list = [1, 2, 3]\n    print(my_list[5])  # IndexError\nexcept IndexError:\n    print(\"Index out of range!\")"
-  },
-  {
-    "objectID": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
-    "href": "posts/python-exceptions/index.html#the-most-diabolical-python-antipattern",
-    "title": "Python Exceptions and Errors",
-    "section": "",
-    "text": "The following is one of the worst mistakes a Python developer can make:\ntry:\n    do_something()\nexcept:\n    pass  # Silently ignores ALL exceptions\nIf you omit the exception type, Python will catch every possible exception, including critical errors. This can hide problems and make debugging extremely difficult. Instead, always catch specific exceptions:\ntry:\n    do_something()\nexcept KeyError:\n    print(\"Key not found in dictionary!\")\nexcept ValueError:\n    print(\"Invalid value encountered!\")"
-  },
-  {
-    "objectID": "posts/python-exceptions/index.html#conclusion",
-    "href": "posts/python-exceptions/index.html#conclusion",
-    "title": "Python Exceptions and Errors",
-    "section": "",
-    "text": "Exceptions should be handled properly to prevent crashes.\nUse try/except minimally to avoid masking other errors.\nfinally ensures execution of cleanup code.\nAvoid catching all exceptions blindly—always specify the exception type.\n\nBy following these best practices, you can write robust and maintainable Python code."
+    "text": "import numpy as np\nimport torch\nimport torch.nn as nn\n\n# Numpy Implementation\nX = np.array([[1, 2], [3, 4], [5, 6]])\nA = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])\nAX = A @ X\nD = np.diag(A.sum(axis=1))\nD_inv = np.linalg.inv(D)\nnormalized_AX = D_inv @ AX\nprint(\"AX (Numpy):\\n\", AX)\nprint(\"D^{-1}AX (Numpy):\\n\", normalized_AX)\n\n# PyTorch Implementation with Learnable Weights\nclass GNNLayer(nn.Module):\n    def __init__(self, in_features, out_features):\n        super(GNNLayer, self).__init__()\n        self.W = nn.Linear(in_features, out_features, bias=False)\n    \n    def forward(self, X, A):\n        D = torch.diag(torch.sum(A, dim=1))\n        D_inv = torch.inverse(D)\n        AX = torch.matmul(A, X)\n        normalized_AX = torch.matmul(D_inv, AX)\n        return self.W(normalized_AX)\n\nX_torch = torch.tensor(X, dtype=torch.float32)\nA_torch = torch.tensor(A, dtype=torch.float32)\n\ngnn_layer = GNNLayer(in_features=2, out_features=2)\noutput = gnn_layer(X_torch, A_torch)\nprint(\"GNN Output with Learnable Weights:\", output)\nThis implementation now includes a learnable weight matrix in PyTorch, using nn.Linear for feature transformation."
   },
   {
     "objectID": "posts/python-class/index.html",
@@ -263,6 +305,6 @@
     "href": "index.html",
     "title": "Bulent Soykan’s Blog",
     "section": "",
-    "text": "Welcome to my digital space where I share insights on AI-driven simulation modeling, digital twin technologies, and mathematical optimization.\nHere you’ll find practical lessons from research, thoughts on machine learning applications, and explorations of how AI can enhance decision-making in complex systems.\n\n\n\n\n\n\n\n\n\n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nBeyond the Single Prompt: Building Multi-Agent Networks with OpenRouter\n\n\n\nLLMs\n\nMulti-Agent Systems\n\nPython\n\nAI Engineering\n\n\n\nMove past single-model interactions by building networked multi-agent architectures, from creative duels to consensus-based judging systems.\n\n\n\nBulent Soykan\n\n\nJan 11, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython’s Walrus Operator: A Comprehensive Guide\n\n\n\ncode\n\n\n\nMaster Python’s walrus operator (:=) with practical examples and best practices\n\n\n\nBulent Soykan\n\n\nMar 29, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Classes, Properties, and Factory Patterns\n\n\n\ncode\n\n\n\nDeep dive into Python classes, properties, and factory design patterns with practical examples\n\n\n\nBulent Soykan\n\n\nMar 1, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\ncode\n\n\n\nUnderstanding Python exception handling, error types, and best practices for robust code\n\n\n\nBulent Soykan\n\n\nFeb 22, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\nExploring Graph Neural Networks through matrix multiplication and message passing mechanisms\n\n\n\nBulent Soykan\n\n\nFeb 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\nWelcome to my digital space for AI research, digital twins, and optimization insights\n\n\n\nBulent Soykan\n\n\nFeb 13, 2025\n\n\n\n\n\n\nNo matching items"
+    "text": "Welcome to my digital space where I share insights on AI-driven simulation modeling, digital twin technologies, and mathematical optimization.\nHere you’ll find practical lessons from research, thoughts on machine learning applications, and explorations of how AI can enhance decision-making in complex systems.\n\n\n\n\n\n\n\n\n\n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nThe Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH\n\n\n\nWorkflow\n\nMulti-Agent Systems\n\nLinux\n\nAI Engineering\n\n\n\nHow to move beyond the browser and manage a network of persistent, always-running AI agents using simple terminal tools like tmux and SSH.\n\n\n\nBulent Soykan\n\n\nJan 19, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nBeyond the Single Prompt: Building Multi-Agent Networks with OpenRouter\n\n\n\nLLMs\n\nMulti-Agent Systems\n\nPython\n\nAI Engineering\n\n\n\nMove past single-model interactions by building networked multi-agent architectures, from creative duels to consensus-based judging systems.\n\n\n\nBulent Soykan\n\n\nJan 11, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython’s Walrus Operator: A Comprehensive Guide\n\n\n\ncode\n\n\n\nMaster Python’s walrus operator (:=) with practical examples and best practices\n\n\n\nBulent Soykan\n\n\nMar 29, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Classes, Properties, and Factory Patterns\n\n\n\ncode\n\n\n\nDeep dive into Python classes, properties, and factory design patterns with practical examples\n\n\n\nBulent Soykan\n\n\nMar 1, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nPython Exceptions and Errors\n\n\n\ncode\n\n\n\nUnderstanding Python exception handling, error types, and best practices for robust code\n\n\n\nBulent Soykan\n\n\nFeb 22, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nMessage Passing in GNNs\n\n\n\nnews\n\ncode\n\nanalysis\n\n\n\nExploring Graph Neural Networks through matrix multiplication and message passing mechanisms\n\n\n\nBulent Soykan\n\n\nFeb 16, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\nWelcome to my digital space for AI research, digital twins, and optimization insights\n\n\n\nBulent Soykan\n\n\nFeb 13, 2025\n\n\n\n\n\n\nNo matching items"
   }
 ]

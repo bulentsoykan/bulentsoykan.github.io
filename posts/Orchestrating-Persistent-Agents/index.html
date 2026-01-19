@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Bulent Soykan">
+<meta name="dcterms.date" content="2026-01-19">
+<meta name="description" content="How to move beyond the browser and manage a network of persistent, always-running AI agents using simple terminal tools like tmux and SSH.">
 
-<title>Bulent Soykan’s Blog – Bulent Soykan</title>
+<title>The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH – Bulent Soykan</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,27 +61,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./favicon.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -106,67 +107,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-image','listing-date','listing-title','listing-author','listing-categories','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -176,9 +119,9 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     </a>
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Bulent Soykan</span>
     </a>
   </div>
@@ -189,11 +132,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./projects.html"> 
+    <a class="nav-link" href="../../projects.html"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item compact">
@@ -221,273 +164,127 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <div class="quarto-title-block"><div><h1 class="title">Bulent Soykan’s Blog</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
-            <p class="subtitle lead">AI Research, Digital Twins &amp; Optimization Insights</p>
-                      </div>
+    <div class="quarto-title column-body">
+      <div class="quarto-title-block"><div><h1 class="title">The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                  <div>
+        <div class="description">
+          How to move beyond the browser and manage a network of persistent, always-running AI agents using simple terminal tools like tmux and SSH.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Workflow</div>
+                <div class="quarto-category">Multi-Agent Systems</div>
+                <div class="quarto-category">Linux</div>
+                <div class="quarto-category">AI Engineering</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bulent Soykan </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 19, 2026</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(7)</span></div><div class="category" data-category="QUklMjBFbmdpbmVlcmluZw==">AI Engineering <span class="quarto-category-count">(2)</span></div><div class="category" data-category="YW5hbHlzaXM=">analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y29kZQ==">code <span class="quarto-category-count">(4)</span></div><div class="category" data-category="TGludXg=">Linux <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TExNcw==">LLMs <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TXVsdGktQWdlbnQlMjBTeXN0ZW1z">Multi-Agent Systems <span class="quarto-category-count">(2)</span></div><div class="category" data-category="bmV3cw==">news <span class="quarto-category-count">(2)</span></div><div class="category" data-category="UHl0aG9u">Python <span class="quarto-category-count">(1)</span></div><div class="category" data-category="V29ya2Zsb3c=">Workflow <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#from-chatbot-to-workforce" id="toc-from-chatbot-to-workforce" class="nav-link active" data-scroll-target="#from-chatbot-to-workforce">From Chatbot to Workforce</a></li>
+  <li><a href="#the-architecture-of-the-hive" id="toc-the-architecture-of-the-hive" class="nav-link" data-scroll-target="#the-architecture-of-the-hive">The Architecture of the Hive</a>
+  <ul class="collapse">
+  <li><a href="#the-creative-loop-windows-1-2" id="toc-the-creative-loop-windows-1-2" class="nav-link" data-scroll-target="#the-creative-loop-windows-1-2">1. The Creative Loop (Windows 1-2)</a></li>
+  <li><a href="#the-supreme-court-windows-3-8" id="toc-the-supreme-court-windows-3-8" class="nav-link" data-scroll-target="#the-supreme-court-windows-3-8">2. The Supreme Court (Windows 3-8)</a></li>
+  </ul></li>
+  <li><a href="#the-operational-workflow-ssh-and-tmux" id="toc-the-operational-workflow-ssh-and-tmux" class="nav-link" data-scroll-target="#the-operational-workflow-ssh-and-tmux">The Operational Workflow: SSH and Tmux</a>
+  <ul class="collapse">
+  <li><a href="#the-always-on-advantage" id="toc-the-always-on-advantage" class="nav-link" data-scroll-target="#the-always-on-advantage">The “Always-On” Advantage</a></li>
+  </ul></li>
+  <li><a href="#the-tech-stack-for-agility" id="toc-the-tech-stack-for-agility" class="nav-link" data-scroll-target="#the-tech-stack-for-agility">The Tech Stack for Agility</a>
+  <ul class="collapse">
+  <li><a href="#openrouter" id="toc-openrouter" class="nav-link" data-scroll-target="#openrouter">1. OpenRouter</a></li>
+  <li><a href="#ai-coding-assistants" id="toc-ai-coding-assistants" class="nav-link" data-scroll-target="#ai-coding-assistants">2. AI Coding Assistants</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-<p>Welcome to my digital space where I share insights on <strong>AI-driven simulation modeling</strong>, <strong>digital twin technologies</strong>, and <strong>mathematical optimization</strong>.</p>
-<p>Here you’ll find practical lessons from research, thoughts on machine learning applications, and explorations of how AI can enhance decision-making in complex systems.</p>
-<hr>
-
+<section id="from-chatbot-to-workforce" class="level2">
+<h2 class="anchored" data-anchor-id="from-chatbot-to-workforce">From Chatbot to Workforce</h2>
+<p>Most people interact with LLMs through a browser tab. They type, they wait, they read. When they close the tab, the context vanishes. This is the “user” mindset.</p>
+<p>To truly leverage multi-agent architectures, you need to shift to the “operator” mindset. You aren’t just chatting; you are managing a facility. Recently, I transitioned my workflow to run about 20 distinct Claude agents continuously. They don’t live in Chrome; they live in a headless Linux server, organized in <code>tmux</code> windows, accessible from anywhere.</p>
+</section>
+<section id="the-architecture-of-the-hive" class="level2">
+<h2 class="anchored" data-anchor-id="the-architecture-of-the-hive">The Architecture of the Hive</h2>
+<p>Before discussing the <em>how</em>, let’s look at <em>what</em> these agents are doing. As I explored in previous experiments, I rely on network architectures rather than single prompts.</p>
+<section id="the-creative-loop-windows-1-2" class="level3">
+<h3 class="anchored" data-anchor-id="the-creative-loop-windows-1-2">1. The Creative Loop (Windows 1-2)</h3>
+<p>I have two agents, “Legolas” and “Melville,” engaged in an infinite poetry duel. They run on a loop: * <strong>Agent A (Legolas):</strong> Generates verse based on ethereal, woodland prompts. * <strong>Agent B (Melville):</strong> critiques and retorts with nautical, brooding prose. * <strong>The Infrastructure:</strong> They run in a detached <code>tmux</code> session. I don’t need to trigger them; I just check the logs to see what they’ve created.</p>
+</section>
+<section id="the-supreme-court-windows-3-8" class="level3">
+<h3 class="anchored" data-anchor-id="the-supreme-court-windows-3-8">2. The Supreme Court (Windows 3-8)</h3>
+<p>This is my “LLM-as-a-Judge” implementation. * <strong>The Judge:</strong> A high-reasoning model (like Claude 3.5 Sonnet or GPT-4o) acting as the orchestrator. * <strong>The Workers:</strong> Five smaller models (Llama 3, Haiku, etc.). * <strong>The Job:</strong> I dump complex queries into a queue. The workers vote, the judge synthesizes a majority opinion, and the result is written to a file. This runs asynchronously, 24/7.</p>
+</section>
+</section>
+<section id="the-operational-workflow-ssh-and-tmux" class="level2">
+<h2 class="anchored" data-anchor-id="the-operational-workflow-ssh-and-tmux">The Operational Workflow: SSH and Tmux</h2>
+<p>Why use the terminal? Why <code>tmux</code>?</p>
+<p>When you are coordinating 20 agents, you cannot rely on a browser that crashes or a laptop that goes to sleep. You need persistence.</p>
+<section id="the-always-on-advantage" class="level3">
+<h3 class="anchored" data-anchor-id="the-always-on-advantage">The “Always-On” Advantage</h3>
+<p><code>tmux</code> (terminal multiplexer) allows sessions to run on a server even when you disconnect. My agents are running Python scripts in infinite loops or listening for file system changes. 1. <strong>Start the work:</strong> I SSH into my server from my desktop. 2. <strong>Detach:</strong> I disconnect the session. The agents keep running. 3. <strong>Check-in:</strong> Later, while at a coffee shop, I SSH in from my phone using Termius or Blink. I re-attach to the session, check the output of the “Judge,” or see the latest poem from “Legolas,” and then disconnect.</p>
+<p>The work never stops just because I closed my laptop.</p>
+</section>
+</section>
+<section id="the-tech-stack-for-agility" class="level2">
+<h2 class="anchored" data-anchor-id="the-tech-stack-for-agility">The Tech Stack for Agility</h2>
+<p>You do not need to be a DevOps engineer to set this up. You need two things:</p>
+<section id="openrouter" class="level3">
+<h3 class="anchored" data-anchor-id="openrouter">1. OpenRouter</h3>
+<p>Running 20 agents on separate API keys (OpenAI, Anthropic, Google) is a billing nightmare. I use <a href="https://openrouter.ai">OpenRouter</a>. It offers a unified API. Whether my “Judge” is using Claude and my “Workers” are using Mistral, it is all one endpoint and one monthly bill. It simplifies the code significantly.</p>
+</section>
+<section id="ai-coding-assistants" class="level3">
+<h3 class="anchored" data-anchor-id="ai-coding-assistants">2. AI Coding Assistants</h3>
+<p>Don’t get bogged down in the theory of agent frameworks. You will see endless videos about LangChain or LangGraph. * <strong>Ignore the noise.</strong> * <strong>Use the AI.</strong> I simply ask my AI coding assistant: <em>“Write a Python script that monitors a text file for new questions. When a question is added, send it to OpenRouter using the Claude 3.5 Sonnet model and append the answer to a log file.”</em></p>
+<p>The AI writes the plumbing. I deploy it to a <code>tmux</code> window. Repeat.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>We are moving past the era of the “chat.” We are entering the era of the “system.” By combining the reliability of old-school Linux tools with the intelligence of modern LLMs, you can build a personal operations center that works for you, even when you are asleep.</p>
 
 
 <!-- -->
 
+</section>
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="V29ya2Zsb3clMkNNdWx0aS1BZ2VudCUyMFN5c3RlbXMlMkNMaW51eCUyQ0FJJTIwRW5naW5lZXJpbmc=" data-listing-date-sort="1768798800000" data-listing-file-modified-sort="1768831058378" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="593">
-<a href="./posts/Orchestrating-Persistent-Agents/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/Orchestrating-Persistent-Agents/tmux-agent-hive.png" class="thumbnail-image card-img" style="height: 200px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('V29ya2Zsb3c='); return false;">Workflow</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TXVsdGktQWdlbnQlMjBTeXN0ZW1z'); return false;">Multi-Agent Systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGludXg='); return false;">Linux</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('QUklMjBFbmdpbmVlcmluZw=='); return false;">AI Engineering</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>How to move beyond the browser and manage a network of persistent, always-running AI agents using simple terminal tools like tmux and SSH.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Bulent Soykan
-</div>
-<div class="listing-date">
-Jan 19, 2026
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="TExNcyUyQ011bHRpLUFnZW50JTIwU3lzdGVtcyUyQ1B5dGhvbiUyQ0FJJTIwRW5naW5lZXJpbmc=" data-listing-date-sort="1768107600000" data-listing-file-modified-sort="1768192950486" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="647">
-<a href="./posts/Beyond-Single-Prompt/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/Beyond-Single-Prompt/multi-agent-network.png" class="thumbnail-image card-img" style="height: 200px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Beyond the Single Prompt: Building Multi-Agent Networks with OpenRouter
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TExNcw=='); return false;">LLMs</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TXVsdGktQWdlbnQlMjBTeXN0ZW1z'); return false;">Multi-Agent Systems</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('UHl0aG9u'); return false;">Python</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('QUklMjBFbmdpbmVlcmluZw=='); return false;">AI Engineering</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Move past single-model interactions by building networked multi-agent architectures, from creative duels to consensus-based judging systems.</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Bulent Soykan
-</div>
-<div class="listing-date">
-Jan 11, 2026
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Y29kZQ==" data-listing-date-sort="1743220800000" data-listing-file-modified-sort="1759074101437" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="617">
-<a href="./posts/walrus-operator/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/walrus-operator/walrus.png" class="thumbnail-image card-img" style="height: 200px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Python’s Walrus Operator: A Comprehensive Guide
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">code</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Master Python’s walrus operator (:=) with practical examples and best practices</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Bulent Soykan
-</div>
-<div class="listing-date">
-Mar 29, 2025
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Y29kZQ==" data-listing-date-sort="1740805200000" data-listing-file-modified-sort="1759074101435" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="626">
-<a href="./posts/python-class/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/python-class/classes.png" class="thumbnail-image card-img" style="height: 200px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Python Classes, Properties, and Factory Patterns
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">code</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Deep dive into Python classes, properties, and factory design patterns with practical examples</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Bulent Soykan
-</div>
-<div class="listing-date">
-Mar 1, 2025
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="Y29kZQ==" data-listing-date-sort="1740200400000" data-listing-file-modified-sort="1759074101436" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="405">
-<a href="./posts/python-exceptions/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/python-exceptions/exception.png" class="thumbnail-image card-img" style="height: 200px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Python Exceptions and Errors
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">code</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Understanding Python exception handling, error types, and best practices for robust code</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Bulent Soykan
-</div>
-<div class="listing-date">
-Feb 22, 2025
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="5" data-categories="bmV3cyUyQ2NvZGUlMkNhbmFseXNpcw==" data-listing-date-sort="1739682000000" data-listing-file-modified-sort="1759074101434" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="689">
-<a href="./posts/Message-passing/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/Message-passing/graph.png" class="thumbnail-image card-img" style="height: 200px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Message Passing in GNNs
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">news</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Y29kZQ=='); return false;">code</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('YW5hbHlzaXM='); return false;">analysis</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Exploring Graph Neural Networks through matrix multiplication and message passing mechanisms</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Bulent Soykan
-</div>
-<div class="listing-date">
-Feb 16, 2025
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="6" data-categories="bmV3cw==" data-listing-date-sort="1739422800000" data-listing-file-modified-sort="1759074101438" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="96">
-<a href="./posts/welcome/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/welcome/thumbnail.jpg" class="thumbnail-image card-img" style="height: 200px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Welcome To My Blog
-</h5>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">news</div>
-
-</div>
-<div class="card-text listing-description delink">
-<p>Welcome to my digital space for AI research, digital twins, and optimization insights</p>
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Bulent Soykan
-</div>
-<div class="listing-date">
-Feb 13, 2025
-</div>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -945,28 +742,68 @@ Feb 13, 2025
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Bulent Soykan's Blog"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "AI Research, Digital Twins &amp; Optimization Insights"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">listing:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">  contents: posts</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">  sort: "date desc"</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">  type: grid</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">  categories: true</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">  sort-ui: false</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">  filter-ui: true</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">  grid-columns: 3</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">  image-height: 200px</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">  fields: [image, date, title, author, categories, description]</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="an">page-layout:</span><span class="co"> full</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> true</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "The Always-On Hive: Orchestrating Persistent Agents via Tmux and SSH"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Bulent Soykan"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-01-19"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> ["Workflow", "Multi-Agent Systems", "Linux", "AI Engineering"]</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "How to move beyond the browser and manage a network of persistent, always-running AI agents using simple terminal tools like tmux and SSH."</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> "tmux-agent-hive.png"</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## From Chatbot to Workforce</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Most people interact with LLMs through a browser tab. They type, they wait, they read. When they close the tab, the context vanishes. This is the "user" mindset.</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>To truly leverage multi-agent architectures, you need to shift to the "operator" mindset. You aren't just chatting; you are managing a facility. Recently, I transitioned my workflow to run about 20 distinct Claude agents continuously. They don't live in Chrome; they live in a headless Linux server, organized in <span class="in">`tmux`</span> windows, accessible from anywhere.</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Architecture of the Hive</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Welcome to my digital space where I share insights on **AI-driven simulation modeling**, **digital twin technologies**, and **mathematical optimization**. </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Before discussing the *how*, let’s look at *what* these agents are doing. As I explored in previous experiments, I rely on network architectures rather than single prompts.</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Here you'll find practical lessons from research, thoughts on machine learning applications, and explorations of how AI can enhance decision-making in complex systems.</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1. The Creative Loop (Windows 1-2)</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>I have two agents, "Legolas" and "Melville," engaged in an infinite poetry duel. They run on a loop:</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Agent A (Legolas):** Generates verse based on ethereal, woodland prompts.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Agent B (Melville):** critiques and retorts with nautical, brooding prose.</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**The Infrastructure:** They run in a detached <span class="in">`tmux`</span> session. I don't need to trigger them; I just check the logs to see what they've created.</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2. The Supreme Court (Windows 3-8)</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>This is my "LLM-as-a-Judge" implementation.</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**The Judge:** A high-reasoning model (like Claude 3.5 Sonnet or GPT-4o) acting as the orchestrator.</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**The Workers:** Five smaller models (Llama 3, Haiku, etc.).</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**The Job:** I dump complex queries into a queue. The workers vote, the judge synthesizes a majority opinion, and the result is written to a file. This runs asynchronously, 24/7.</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Operational Workflow: SSH and Tmux</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>Why use the terminal? Why <span class="in">`tmux`</span>?</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>When you are coordinating 20 agents, you cannot rely on a browser that crashes or a laptop that goes to sleep. You need persistence.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="fu">### The "Always-On" Advantage</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="in">`tmux`</span> (terminal multiplexer) allows sessions to run on a server even when you disconnect. My agents are running Python scripts in infinite loops or listening for file system changes.</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Start the work:** I SSH into my server from my desktop.</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Detach:** I disconnect the session. The agents keep running.</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Check-in:** Later, while at a coffee shop, I SSH in from my phone using Termius or Blink. I re-attach to the session, check the output of the "Judge," or see the latest poem from "Legolas," and then disconnect.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>The work never stops just because I closed my laptop.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Tech Stack for Agility</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>You do not need to be a DevOps engineer to set this up. You need two things:</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1. OpenRouter</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>Running 20 agents on separate API keys (OpenAI, Anthropic, Google) is a billing nightmare. I use <span class="co">[</span><span class="ot">OpenRouter</span><span class="co">](https://openrouter.ai)</span>. It offers a unified API. Whether my "Judge" is using Claude and my "Workers" are using Mistral, it is all one endpoint and one monthly bill. It simplifies the code significantly.</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2. AI Coding Assistants</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>Don't get bogged down in the theory of agent frameworks. You will see endless videos about LangChain or LangGraph.</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Ignore the noise.**</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Use the AI.**</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>I simply ask my AI coding assistant: *"Write a Python script that monitors a text file for new questions. When a question is added, send it to OpenRouter using the Claude 3.5 Sonnet model and append the answer to a log file."*</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>The AI writes the plumbing. I deploy it to a <span class="in">`tmux`</span> window. Repeat.</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Conclusion</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>We are moving past the era of the "chat." We are entering the era of the "system." By combining the reliability of old-school Linux tools with the intelligence of modern LLMs, you can build a personal operations center that works for you, even when you are asleep.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

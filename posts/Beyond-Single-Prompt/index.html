@@ -269,7 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="the-architecture" class="level3">
 <h3 class="anchored" data-anchor-id="the-architecture">The Architecture</h3>
 <ol type="1">
-<li><strong>The Judge:</strong> A high-reasoning model (e.g., GPT-4o) acts as the orchestrator.</li>
+<li><strong>The Judge:</strong> A high-reasoning model acts as the orchestrator.</li>
 <li><strong>The Workers:</strong> A pool of 3 to 5 smaller, faster models (e.g., Llama 3 8B, Haiku, Gemini Flash).</li>
 </ol>
 </section>
@@ -285,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="use-openrouter" class="level3">
 <h3 class="anchored" data-anchor-id="use-openrouter">Use OpenRouter</h3>
 <p>The biggest friction point in multi-agent systems is managing API keys. You do not want to manage separate billing for OpenAI, Anthropic, Google, and Mistral.</p>
-<p><a href="https://openrouter.ai">OpenRouter</a> solves this. It provides a standard OpenAI-compatible API for almost every model. You change one string in your code to switch from <code>gpt-4</code> to <code>claude-3-opus</code>. This flexibility is essential when testing which models work best as “Judges” versus “Workers.”</p>
+<p><a href="https://openrouter.ai">OpenRouter</a> solves this. It provides a standard OpenAI-compatible API for almost every model. You change one string in your code to switch from <code>gpt</code> to <code>claude</code>. This flexibility is essential when testing which models work best as “Judges” versus “Workers.”</p>
 </section>
 <section id="leverage-ai-coding-assistants" class="level3">
 <h3 class="anchored" data-anchor-id="leverage-ai-coding-assistants">Leverage AI Coding Assistants</h3>
@@ -797,7 +797,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>I implemented a consensus architecture, often called "LLM-as-a-Judge." This system acts like a Supreme Court of inference.</span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Architecture</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**The Judge:** A high-reasoning model (e.g., GPT-4o) acts as the orchestrator.</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**The Judge:** A high-reasoning model acts as the orchestrator.</span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**The Workers:** A pool of 3 to 5 smaller, faster models (e.g., Llama 3 8B, Haiku, Gemini Flash).</span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Workflow</span></span>
@@ -817,7 +817,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Use OpenRouter</span></span>
 <span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>The biggest friction point in multi-agent systems is managing API keys. You do not want to manage separate billing for OpenAI, Anthropic, Google, and Mistral.</span>
 <span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">OpenRouter</span><span class="co">](https://openrouter.ai)</span> solves this. It provides a standard OpenAI-compatible API for almost every model. You change one string in your code to switch from <span class="in">`gpt-4`</span> to <span class="in">`claude-3-opus`</span>. This flexibility is essential when testing which models work best as "Judges" versus "Workers."</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">OpenRouter</span><span class="co">](https://openrouter.ai)</span> solves this. It provides a standard OpenAI-compatible API for almost every model. You change one string in your code to switch from <span class="in">`gpt`</span> to <span class="in">`claude`</span>. This flexibility is essential when testing which models work best as "Judges" versus "Workers."</span>
 <span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Leverage AI Coding Assistants</span></span>
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>Do not get bogged down in writing the boilerplate for asynchronous API calls. Use an AI coding assistant (like Cursor or GitHub Copilot) to handle the plumbing.</span>
