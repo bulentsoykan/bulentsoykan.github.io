@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Python Data Structures: NamedTuple vs. @dataclass/index.html",
       "/posts/Orchestrating-Persistent-Agents/index.html",
       "/posts/Beyond-Single-Prompt/index.html",
       "/posts/walrus-operator/index.html",
