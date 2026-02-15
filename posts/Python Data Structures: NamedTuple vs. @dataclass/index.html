@@ -212,7 +212,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#the-modern-namedtuple" id="toc-the-modern-namedtuple" class="nav-link" data-scroll-target="#the-modern-namedtuple">1. The Modern <code>NamedTuple</code></a>
   <ul class="collapse">
   <li><a href="#syntax" id="toc-syntax" class="nav-link" data-scroll-target="#syntax">Syntax</a></li>
+  <li><a href="#key-traits" id="toc-key-traits" class="nav-link" data-scroll-target="#key-traits">Key Traits</a></li>
   </ul></li>
+  <li><a href="#the-dataclass" id="toc-the-dataclass" class="nav-link" data-scroll-target="#the-dataclass">2. The <code>@dataclass</code></a>
+  <ul class="collapse">
+  <li><a href="#syntax-1" id="toc-syntax-1" class="nav-link" data-scroll-target="#syntax-1">Syntax</a></li>
+  <li><a href="#key-traits-1" id="toc-key-traits-1" class="nav-link" data-scroll-target="#key-traits-1">Key Traits</a></li>
+  </ul></li>
+  <li><a href="#comparison-which-one-to-use" id="toc-comparison-which-one-to-use" class="nav-link" data-scroll-target="#comparison-which-one-to-use">Comparison: Which one to use?</a></li>
+  <li><a href="#the-decision-matrix" id="toc-the-decision-matrix" class="nav-link" data-scroll-target="#the-decision-matrix">The Decision Matrix</a>
+  <ul class="collapse">
+  <li><a href="#choose-namedtuple-if" id="toc-choose-namedtuple-if" class="nav-link" data-scroll-target="#choose-namedtuple-if">Choose <code>NamedTuple</code> if:</a></li>
+  <li><a href="#choose-dataclass-if" id="toc-choose-dataclass-if" class="nav-link" data-scroll-target="#choose-dataclass-if">Choose <code>@dataclass</code> if:</a></li>
+  </ul></li>
+  <li><a href="#the-hybrid-approach-frozentrue" id="toc-the-hybrid-approach-frozentrue" class="nav-link" data-scroll-target="#the-hybrid-approach-frozentrue">The Hybrid Approach: <code>frozen=True</code></a></li>
   </ul>
 </nav>
     </div>
@@ -243,77 +256,123 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>c1 <span class="op">=</span> Card(<span class="st">"A"</span>, <span class="st">"Spades"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(c1.rank)  <span class="co"># Output: A</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>:::{<span class="co">#quarto-navigation-envelope .hidden}</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>[Bulent Soykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1zaWRlYmFyLXRpdGxl"</span>}</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>[Bulent Soykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXItdGl0bGU="</span>}</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>[About]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXI6QWJvdXQ="</span>}</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>[<span class="op">/</span>about.html]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXI6L2Fib3V0Lmh0bWw="</span>}</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>[Projects]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXI6UHJvamVjdHM="</span>}</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>[<span class="op">/</span>projects.html]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXI6L3Byb2plY3RzLmh0bWw="</span>}</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>[https:<span class="op">//</span>github.com<span class="op">/</span>bulentsoykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXI6aHR0cHM6Ly9naXRodWIuY29tL2J1bGVudHNveWthbg=="</span>}</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>[https:<span class="op">//</span>x.com<span class="op">/</span>bulentsoykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXI6aHR0cHM6Ly94LmNvbS9idWxlbnRzb3lrYW4="</span>}</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>[https:<span class="op">//</span>www.linkedin.com<span class="op">/</span><span class="kw">in</span><span class="op">/</span>bulent<span class="op">-</span>soykan<span class="op">/</span>]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLWludC1uYXZiYXI6aHR0cHM6Ly93d3cubGlua2VkaW4uY29tL2luL2J1bGVudC1zb3lrYW4v"</span>}</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>:::{<span class="co">#quarto-meta-markdown .hidden}</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>[Python Data Structures: NamedTuple vs. <span class="op">@</span>dataclass – Bulent Soykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLW1ldGF0aXRsZQ=="</span>}</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>[Python Data Structures: NamedTuple vs. <span class="op">@</span>dataclass – Bulent Soykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLXR3aXR0ZXJjYXJkdGl0bGU="</span>}</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>[Python Data Structures: NamedTuple vs. <span class="op">@</span>dataclass – Bulent Soykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLW9nY2FyZHRpdGxl"</span>}</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>[Bulent Soykan]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLW1ldGFzaXRlbmFtZQ=="</span>}</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>[A deep dive into modern Python data structures. Learn the critical differences between NamedTuple <span class="kw">and</span> <span class="op">@</span>dataclass to choose the right tool <span class="cf">for</span> your code.]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLXR3aXR0ZXJjYXJkZGVzYw=="</span>}</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>[A deep dive into modern Python data structures. Learn the critical differences between NamedTuple <span class="kw">and</span> <span class="op">@</span>dataclass to choose the right tool <span class="cf">for</span> your code.]{.hidden .quarto<span class="op">-</span>markdown<span class="op">-</span>envelope<span class="op">-</span>contents render<span class="op">-</span><span class="bu">id</span><span class="op">=</span><span class="st">"cXVhcnRvLW9nY2FyZGRkZXNj"</span>}</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;!--</span> <span class="op">--&gt;</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>::: {.quarto<span class="op">-</span>embedded<span class="op">-</span>source<span class="op">-</span>code}</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>```````````````````{.markdown shortcodes<span class="op">=</span><span class="st">"false"</span>}</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="op">---</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>title: <span class="st">"Python Data Structures: NamedTuple vs. @dataclass"</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>author: <span class="st">"Bulent Soykan"</span></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>date: <span class="st">"2026-02-15"</span></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>categories: [<span class="st">"Python"</span>, <span class="st">"Coding"</span>, <span class="st">"Best Practices"</span>]</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>description: <span class="st">"A deep dive into modern Python data structures. Learn the critical differences between NamedTuple and @dataclass to choose the right tool for your code."</span></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>image: <span class="st">"data.png"</span></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="op">---</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="co">## The End of Boilerplate</span></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>For years, writing a <span class="kw">class</span> <span class="kw">in</span> Python just to hold data was tedious. You had to write an `__init__` method, a `__repr__` method to make it readable, <span class="kw">and</span> often an `__eq__` method to compare instances. It was a lot of noise <span class="cf">for</span> very little signal.</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>Today, Python offers two powerful solutions to this problem: `NamedTuple` <span class="kw">and</span> `<span class="op">@</span>dataclass`. Both allow you to create structured data types <span class="cf">with</span> <span class="bu">type</span> hints, but they serve fundamentally different purposes. The choice usually comes down to one question: <span class="op">**</span>Do you need to change the data after you create it?<span class="op">**</span></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>Here <span class="kw">is</span> how to decide.</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="co">## 1. The Modern `NamedTuple`</span></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>The `NamedTuple` (<span class="im">from</span> the `typing` module) <span class="kw">is</span> the <span class="bu">type</span><span class="op">-</span>hinted evolution of the older `collections.namedtuple`. It retains the memory efficiency of a standard <span class="bu">tuple</span> but enforces strict structure.</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>Think of a `NamedTuple` like a coordinate on a <span class="bu">map</span> <span class="kw">or</span> a row <span class="kw">in</span> a database. It <span class="kw">is</span> a snapshot of data that should <span class="kw">not</span> change.</span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co">### Syntax</span></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>```python</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> NamedTuple</span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Card(NamedTuple):</span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>    rank: <span class="bu">str</span></span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>    suit: <span class="bu">str</span></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>c1 <span class="op">=</span> Card(<span class="st">"A"</span>, <span class="st">"Spades"</span>)</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(c1.rank)  <span class="co"># Output: A</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>:::</p>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(c1.rank)  <span class="co"># Output: A</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
+<section id="key-traits" class="level3">
+<h3 class="anchored" data-anchor-id="key-traits">Key Traits</h3>
+<ul>
+<li><strong>Immutable:</strong> This is the defining feature. Once you create <code>c1</code>, you cannot change it. <code>c1.rank = "K"</code> will raise an <code>AttributeError</code>.</li>
+<li><strong>It is a Tuple:</strong> Because it inherits from <code>tuple</code>, it behaves like one. You can iterate over it (<code>for x in c1</code>), access items by index (<code>c1[0]</code>), and unpack it (<code>rank, suit = c1</code>).</li>
+<li><strong>Lightweight:</strong> It uses significantly less memory than a standard class because it doesn’t need a <code>__dict__</code> to store attributes per instance.</li>
+</ul>
+</section>
+</section>
+<section id="the-dataclass" class="level2">
+<h2 class="anchored" data-anchor-id="the-dataclass">2. The <code>@dataclass</code></h2>
+<p>Introduced in Python 3.7, the <code>@dataclass</code> decorator is the standard for creating classes that primarily store state. It automatically generates the boilerplate code (<code>__init__</code>, <code>__repr__</code>, etc.) for you, but unlike a tuple, it creates a full-fledged object.</p>
+<p>Think of a <code>@dataclass</code> like a configuration object or a player entity in a game. It holds data that might need to evolve.</p>
+<section id="syntax-1" class="level3">
+<h3 class="anchored" data-anchor-id="syntax-1">Syntax</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CardData:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    rank: <span class="bu">str</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    suit: <span class="bu">str</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>c2 <span class="op">=</span> CardData(<span class="st">"A"</span>, <span class="st">"Hearts"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>c2.rank <span class="op">=</span> <span class="st">"K"</span>    <span class="co"># This works! The object is mutable.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="key-traits-1" class="level3">
+<h3 class="anchored" data-anchor-id="key-traits-1">Key Traits</h3>
+<ul>
+<li><strong>Mutable:</strong> You can update fields freely after initialization.</li>
+<li><strong>It is a Class:</strong> It behaves like a standard object. You cannot index it (<code>c2[0]</code> fails) or unpack it without writing custom helper methods.</li>
+<li><strong>Rich Features:</strong> It supports complex inheritance, default values, and post-initialization processing (<code>__post_init__</code>) much better than <code>NamedTuple</code>.</li>
+</ul>
+</section>
+</section>
+<section id="comparison-which-one-to-use" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-which-one-to-use">Comparison: Which one to use?</h2>
+<p>Here is the breakdown of technical differences:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;"><code>NamedTuple</code></th>
+<th style="text-align: left;"><code>@dataclass</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Mutability</strong></td>
+<td style="text-align: left;"><strong>Immutable</strong> (Read-only)</td>
+<td style="text-align: left;"><strong>Mutable</strong> (Read-write)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Type Hints</strong></td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Memory Use</strong></td>
+<td style="text-align: left;">Low (Tiny overhead)</td>
+<td style="text-align: left;">Normal (Class overhead)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Behavior</strong></td>
+<td style="text-align: left;">Acts like a Tuple <code>(x, y)</code></td>
+<td style="text-align: left;">Acts like an Object <code>obj.x</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Best For</strong></td>
+<td style="text-align: left;">Coordinates, Return values</td>
+<td style="text-align: left;">Configs, State, Entities</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-decision-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="the-decision-matrix">The Decision Matrix</h2>
+<section id="choose-namedtuple-if" class="level3">
+<h3 class="anchored" data-anchor-id="choose-namedtuple-if">Choose <code>NamedTuple</code> if:</h3>
+<ol type="1">
+<li><strong>Safety is a priority.</strong> You want to ensure the data is read-only and cannot be accidentally modified by another part of your code.</li>
+<li><strong>You need tuple behavior.</strong> You want to unpack the data (<code>x, y = point</code>) or pass it to functions that expect sequences.</li>
+<li><strong>Performance matters.</strong> You are processing millions of small objects and need to minimize memory footprint.</li>
+</ol>
+</section>
+<section id="choose-dataclass-if" class="level3">
+<h3 class="anchored" data-anchor-id="choose-dataclass-if">Choose <code>@dataclass</code> if:</h3>
+<ol type="1">
+<li><strong>Data evolves.</strong> You are building something like a User profile where fields (like <code>last_login</code> or <code>score</code>) change over time.</li>
+<li><strong>You need logic.</strong> You plan to add custom methods to the class (e.g., <code>def is_valid(self):</code>).</li>
+<li><strong>You need inheritance.</strong> Dataclasses handle class hierarchies more gracefully than named tuples.</li>
+</ol>
+</section>
+</section>
+<section id="the-hybrid-approach-frozentrue" class="level2">
+<h2 class="anchored" data-anchor-id="the-hybrid-approach-frozentrue">The Hybrid Approach: <code>frozen=True</code></h2>
+<p>What if you want the features of a <code>@dataclass</code> (like nice inheritance) but the safety of a <code>NamedTuple</code> (immutability)?</p>
+<p>You can “freeze” a dataclass:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ImmutablePoint:</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    x: <span class="bu">int</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    y: <span class="bu">int</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> ImmutablePoint(<span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># p.x = 15  &lt;-- Raises FrozenInstanceError</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This gives you an immutable object that still behaves like a class (no indexing/unpacking) rather than a tuple. It is often the best middle ground for modern Python development.</p>
+
+
+<!-- -->
+
 </section>
 
 </main> <!-- /main -->
@@ -772,7 +831,119 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       }
     }
   });
-  </script>
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Python Data Structures: NamedTuple vs. @dataclass"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Bulent Soykan"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-02-15"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> ["Python", "Coding", "Best Practices"]</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "A deep dive into modern Python data structures. Learn the critical differences between NamedTuple and @dataclass to choose the right tool for your code."</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> "python-structures.png"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## The End of Boilerplate</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>For years, writing a class in Python just to hold data was tedious. You had to write an <span class="in">`__init__`</span> method, a <span class="in">`__repr__`</span> method to make it readable, and often an <span class="in">`__eq__`</span> method to compare instances. It was a lot of noise for very little signal.</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>Today, Python offers two powerful solutions to this problem: <span class="in">`NamedTuple`</span> and <span class="in">`@dataclass`</span>. Both allow you to create structured data types with type hints, but they serve fundamentally different purposes. The choice usually comes down to one question: **Do you need to change the data after you create it?**</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>Here is how to decide.</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. The Modern `NamedTuple`</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>The <span class="in">`NamedTuple`</span> (from the <span class="in">`typing`</span> module) is the type-hinted evolution of the older <span class="in">`collections.namedtuple`</span>. It retains the memory efficiency of a standard tuple but enforces strict structure.</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>Think of a <span class="in">`NamedTuple`</span> like a coordinate on a map or a row in a database. It is a snapshot of data that should not change.</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### Syntax</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="in">```python</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> NamedTuple</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Card(NamedTuple):</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    rank: <span class="bu">str</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    suit: <span class="bu">str</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>c1 <span class="op">=</span> Card(<span class="st">"A"</span>, <span class="st">"Spades"</span>)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(c1.rank)  <span class="co"># Output: A</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="fu">### Key Traits</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Immutable:** This is the defining feature. Once you create <span class="in">`c1`</span>, you cannot change it. <span class="in">`c1.rank = "K"`</span> will raise an <span class="in">`AttributeError`</span>.</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**It is a Tuple:** Because it inherits from <span class="in">`tuple`</span>, it behaves like one. You can iterate over it (<span class="in">`for x in c1`</span>), access items by index (<span class="in">`c1[0]`</span>), and unpack it (<span class="in">`rank, suit = c1`</span>).</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Lightweight:** It uses significantly less memory than a standard class because it doesn't need a <span class="in">`__dict__`</span> to store attributes per instance.</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. The `@dataclass`</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>Introduced in Python 3.7, the <span class="in">`@dataclass`</span> decorator is the standard for creating classes that primarily store state. It automatically generates the boilerplate code (<span class="in">`__init__`</span>, <span class="in">`__repr__`</span>, etc.) for you, but unlike a tuple, it creates a full-fledged object.</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>Think of a <span class="in">`@dataclass`</span> like a configuration object or a player entity in a game. It holds data that might need to evolve.</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="fu">### Syntax</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a><span class="in">```python</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CardData:</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    rank: <span class="bu">str</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    suit: <span class="bu">str</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>c2 <span class="op">=</span> CardData(<span class="st">"A"</span>, <span class="st">"Hearts"</span>)</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>c2.rank <span class="op">=</span> <span class="st">"K"</span>    <span class="co"># This works! The object is mutable.</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Key Traits</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Mutable:** You can update fields freely after initialization.</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**It is a Class:** It behaves like a standard object. You cannot index it (<span class="in">`c2[0]`</span> fails) or unpack it without writing custom helper methods.</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="ss">*   </span>**Rich Features:** It supports complex inheritance, default values, and post-initialization processing (<span class="in">`__post_init__`</span>) much better than <span class="in">`NamedTuple`</span>.</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparison: Which one to use?</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>Here is the breakdown of technical differences:</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Feature <span class="pp">|</span> <span class="in">`NamedTuple`</span> <span class="pp">|</span> <span class="in">`@dataclass`</span> <span class="pp">|</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="pp">| :---</span> <span class="pp">| :---</span> <span class="pp">| :---</span> <span class="pp">|</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Mutability** | **Immutable** (Read-only) | **Mutable** (Read-write) <span class="pp">|</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Type Hints** <span class="pp">|</span> Yes <span class="pp">|</span> Yes <span class="pp">|</span></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Memory Use** <span class="pp">|</span> Low (Tiny overhead) <span class="pp">|</span> Normal (Class overhead) <span class="pp">|</span></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Behavior** <span class="pp">|</span> Acts like a Tuple <span class="in">`(x, y)`</span> <span class="pp">|</span> Acts like an Object <span class="in">`obj.x`</span> <span class="pp">|</span></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Best For** <span class="pp">|</span> Coordinates, Return values <span class="pp">|</span> Configs, State, Entities <span class="pp">|</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Decision Matrix</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="fu">### Choose `NamedTuple` if:</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Safety is a priority.** You want to ensure the data is read-only and cannot be accidentally modified by another part of your code.</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**You need tuple behavior.** You want to unpack the data (<span class="in">`x, y = point`</span>) or pass it to functions that expect sequences.</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Performance matters.** You are processing millions of small objects and need to minimize memory footprint.</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="fu">### Choose `@dataclass` if:</span></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Data evolves.** You are building something like a User profile where fields (like <span class="in">`last_login`</span> or <span class="in">`score`</span>) change over time.</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**You need logic.** You plan to add custom methods to the class (e.g., <span class="in">`def is_valid(self):`</span>).</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**You need inheritance.** Dataclasses handle class hierarchies more gracefully than named tuples.</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Hybrid Approach: `frozen=True`</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>What if you want the features of a <span class="in">`@dataclass`</span> (like nice inheritance) but the safety of a <span class="in">`NamedTuple`</span> (immutability)?</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>You can "freeze" a dataclass:</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="in">```python</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ImmutablePoint:</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>    x: <span class="bu">int</span></span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>    y: <span class="bu">int</span></span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> ImmutablePoint(<span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a><span class="co"># p.x = 15  &lt;-- Raises FrozenInstanceError</span></span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>This gives you an immutable object that still behaves like a class (no indexing/unpacking) rather than a tuple. It is often the best middle ground for modern Python development.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 
