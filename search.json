@@ -60,7 +60,7 @@
     "href": "posts/Python Data Structures: NamedTuple vs. @dataclass/index.html#the-hybrid-approach-frozentrue",
     "title": "Python Data Structures: NamedTuple vs. @dataclass",
     "section": "The Hybrid Approach: frozen=True",
-    "text": "The Hybrid Approach: frozen=True\nWhat if you want the features of a @dataclass (like nice inheritance) but the safety of a NamedTuple (immutability)?\nYou can “freeze” a dataclass:\n@dataclass(frozen=True)\nclass ImmutablePoint:\n    x: int\n    y: int\n\np = ImmutablePoint(10, 20)\n# p.x = 15  &lt;-- Raises FrozenInstanceError\nThis gives you an immutable object that still behaves like a class (no indexing/unpacking) rather than a tuple. It is often the best middle ground for modern Python development."
+    "text": "The Hybrid Approach: frozen=True\nWhat if you want the features of a @dataclass (like nice inheritance) but the safety of a NamedTuple (immutability)?\nYou can “freeze” a dataclass:\n@dataclass(frozen=True)\nclass ImmutablePoint:\n    x: int\n    y: int\n\np = ImmutablePoint(10, 20)\n# p.x = 15  &lt;-- Raises FrozenInstanceError\nThis gives you an immutable object that still behaves like a class (no indexing/unpacking) rather than a tuple. It is often the best middle ground for modern Python development.\nThank you!"
   },
   {
     "objectID": "posts/Message-passing/index.html",
